@@ -32,10 +32,10 @@ export default function Step3({ register, errors, watch, setValue }: Step3Props)
   }
 
   return (
-    <div className="space-y-3 fade-in">
-      <div className="form-section">
-        <h3 className="section-title">Sua Jornada Espiritual</h3>
-        <div className="space-y-2">
+    <div className="w-full space-y-2 fade-in px-1">
+        <div className="form-section">
+          <h3 className="section-title">Sua Jornada Espiritual</h3>
+          <div className="space-y-2">
           {/* Bio */}
           <div className="input-with-icon tooltip-trigger">
             <Icon icon="mdi:feather" className="input-icon" style={{ top: "1rem" }} />
@@ -171,6 +171,6 @@ export default function Step3({ register, errors, watch, setValue }: Step3Props)
           )}
         </div>
       </div>
-    </div>
+      </div>
   )
 }

@@ -37,11 +37,10 @@ export default function Step1({ register, errors, photo, onPhotoChange, watch }:
   }
 
   return (
-    <div className="space-y-3 fade-in">
-      <div className="form-section">
-        <h3 className="section-title">
-            oais</h3>
-        <div className="space-y-2">
+    <div className="w-full space-y-2 fade-in px-1">
+        <div className="form-section">
+          <h3 className="section-title">Informações Pessoais</h3>
+          <div className="space-y-2">
           {/* Nome */}
           <div className="input-with-icon">
             <Icon icon="mdi:account" className="input-icon" />
@@ -105,7 +104,7 @@ export default function Step1({ register, errors, photo, onPhotoChange, watch }:
               onPhotoChange={onPhotoChange}
               currentPhoto={photo}
             />
-          </div>
+        </div>
         </div>
       </div>
     </div>

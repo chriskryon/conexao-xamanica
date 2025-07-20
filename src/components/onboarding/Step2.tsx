@@ -69,10 +69,10 @@ export default function Step2({ register, errors, watch }: Step2Props) {
   }
 
   return (
-    <div className="space-y-4 fade-in">
-      <div className="form-section">
-        <h3 className="section-title">Informações Astrológicas</h3>
-        <div className="space-y-3">
+    <div className="w-full space-y-2 fade-in px-1">
+        <div className="form-section">
+          <h3 className="section-title">Informações Astrológicas</h3>
+          <div className="space-y-2">
           {/* Data de Nascimento */}
           <div className="input-with-icon">
             <Icon icon="mdi:calendar" className="input-icon" />
@@ -186,7 +186,7 @@ export default function Step2({ register, errors, watch }: Step2Props) {
             </div>
           )}
         </div>
+        </div>
       </div>
-    </div>
   )
 }

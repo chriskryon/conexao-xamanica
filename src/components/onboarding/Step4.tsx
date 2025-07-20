@@ -10,10 +10,10 @@ interface Step4Props {
 
 export default function Step4({ register, errors }: Step4Props) {
   return (
-    <div className="space-y-4 fade-in">
-      <div className="form-section">
-        <h3 className="section-title">Preferências Pessoais</h3>
-        <div className="space-y-3">
+    <div className="w-full space-y-2 fade-in px-1">
+        <div className="form-section">
+          <h3 className="section-title">Preferências Pessoais</h3>
+          <div className="space-y-2">
           {/* Estado Civil */}
           <div className="input-with-icon">
             <Icon icon="mdi:heart" className="input-icon" />
@@ -46,7 +46,7 @@ export default function Step4({ register, errors }: Step4Props) {
             {errors.preferencia && <div className="error-message font-sans">{errors.preferencia.message}</div>}
           </div>
         </div>
+        </div>
       </div>
-    </div>
   )
 }

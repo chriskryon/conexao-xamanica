@@ -517,3 +517,28 @@ body {
   font-family: inherit !important;
   padding: 16px !important;
 }
+
+/* Scrollbar estável para evitar mudança de largura */
+.scrollbar-stable {
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
+}
+
+.scrollbar-stable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-stable::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.scrollbar-stable::-webkit-scrollbar-thumb {
+  background: rgba(46, 74, 47, 0.5);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.scrollbar-stable::-webkit-scrollbar-thumb:hover {
+  background: rgba(46, 74, 47, 0.7);
+}

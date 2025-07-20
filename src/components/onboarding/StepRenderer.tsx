@@ -24,16 +24,24 @@ export default function StepRenderer({
   photo,
   onPhotoChange,
 }: StepRendererProps) {
-  switch (currentStep) {
-    case 1:
-      return <Step1 register={register} errors={errors} photo={photo} onPhotoChange={onPhotoChange} watch={watch} />
-    case 2:
-      return <Step2 register={register} errors={errors} watch={watch} />
-    case 3:
-      return <Step3 register={register} errors={errors} watch={watch} setValue={setValue} />
-    case 4:
-      return <Step4 register={register} errors={errors} />
-    default:
-      return null
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1:
+        return <Step1 register={register} errors={errors} photo={photo} onPhotoChange={onPhotoChange} watch={watch} />
+      case 2:
+        return <Step2 register={register} errors={errors} watch={watch} />
+      case 3:
+        return <Step3 register={register} errors={errors} watch={watch} setValue={setValue} />
+      case 4:
+        return <Step4 register={register} errors={errors} />
+      default:
+        return null
+    }
   }
+
+  return (
+    <div className="w-full h-full">
+      {renderStep()}
+    </div>
+  )
 }

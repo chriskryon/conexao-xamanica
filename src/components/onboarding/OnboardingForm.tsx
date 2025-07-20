@@ -37,7 +37,7 @@ export default function OnboardingForm({
   onClearData,
 }: OnboardingFormProps) {
   return (
-    <div className="flex flex-col h-full max-w-2xl mx-auto px-8 py-4 md:max-w-4xl md:px-12">
+    <div className="flex flex-col h-full w-full px-4 py-3 md:px-6">
       {/* Indicador de dados salvos */}
       <SavedDataIndicator onClearData={onClearData} />
       
@@ -46,13 +46,13 @@ export default function OnboardingForm({
       {/* <ProgressIndicator currentStep={currentStep} totalSteps={4} /> */}
 
       {/* Main Card - com scroll interno */}
-      <div className="card-glassmorphism flex-1 flex flex-col overflow-hidden">
+      <div className="card-glassmorphism flex-1 flex flex-col overflow-hidden w-full max-w-sm mx-auto md:max-w-2xl">
         {/* Step Header - fixo */}
         <StepHeader currentStep={currentStep} />
 
         {/* Form - com scroll */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="space-y-4 pr-2">
+        <div className="flex-1 overflow-y-auto scrollbar-stable">
+          <div className="space-y-3 pr-1 min-h-full">
             <StepTransition currentStep={currentStep}>
               <StepRenderer
                 currentStep={currentStep}
