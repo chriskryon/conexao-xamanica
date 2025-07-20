@@ -38,6 +38,7 @@ export default function Onboarding() {
           register={register}
           errors={errors}
           watch={watch}
+          setValue={setValue}
           photo={photo}
           onPhotoChange={handlePhotoChange}
           onPrevious={prevStep}

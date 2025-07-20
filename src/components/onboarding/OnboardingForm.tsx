@@ -4,7 +4,7 @@ import StepHeader from "./StepHeader"
 import StepTransition from "./StepTransition"
 import NavigationButtons from "./NavigationButtons"
 import StepRenderer from "./StepRenderer"
-import { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form"
+import { FieldErrors, UseFormRegister, UseFormWatch, UseFormSetValue } from "react-hook-form"
 import { FormData } from "@/schemas/onboarding"
 
 interface OnboardingFormProps {
@@ -12,6 +12,7 @@ interface OnboardingFormProps {
   register: UseFormRegister<FormData>
   errors: FieldErrors<FormData>
   watch: UseFormWatch<FormData>
+  setValue: UseFormSetValue<FormData>
   photo: File | null
   onPhotoChange: (file: File | null) => void
   onPrevious: () => void
@@ -26,6 +27,7 @@ export default function OnboardingForm({
   register,
   errors,
   watch,
+  setValue,
   photo,
   onPhotoChange,
   onPrevious,
@@ -56,6 +58,7 @@ export default function OnboardingForm({
                 register={register}
                 errors={errors}
                 watch={watch}
+                setValue={setValue}
                 photo={photo}
                 onPhotoChange={onPhotoChange}
               />

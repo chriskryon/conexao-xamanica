@@ -1,17 +1,35 @@
 import { Icon } from "@iconify/react"
-import { UseFormRegister, FieldErrors, UseFormWatch } from "react-hook-form"
+import { UseFormRegister, FieldErrors, UseFormWatch, UseFormSetValue } from "react-hook-form"
 import { FormData } from "@/schemas/onboarding"
-import { inicioJornadaOptions, tempoExperienciaOptions, animalOptions } from "@/constants/onboarding"
+import { inicioJornadaOptions, tempoExperienciaOptions, animalOptions, animalSecundarioOptions } from "@/constants/onboarding"
 
 interface Step3Props {
   register: UseFormRegister<FormData>
   errors: FieldErrors<FormData>
   watch: UseFormWatch<FormData>
+  setValue: UseFormSetValue<FormData>
 }
 
-export default function Step3({ register, errors, watch }: Step3Props) {
+export default function Step3({ register, errors, watch, setValue }: Step3Props) {
   const bio = watch("bio")
   const animalPoder = watch("animalPoder")
+  const animaisSecundarios = watch("animaisSecundarios") || []
+
+  const handleAnimalSecundarioToggle = (animalValue: string) => {
+    const currentAnimals = animaisSecundarios || []
+    const isSelected = currentAnimals.includes(animalValue)
+    
+    if (isSelected) {
+      // Remove animal
+      const newAnimals = currentAnimals.filter(animal => animal !== animalValue)
+      setValue("animaisSecundarios", newAnimals)
+    } else {
+      // Adiciona animal (máximo 3 secundários)
+      if (currentAnimals.length < 3) {
+        setValue("animaisSecundarios", [...currentAnimals, animalValue])
+      }
+    }
+  }
 
   return (
     <div className="space-y-4 fade-in">
@@ -75,7 +93,7 @@ export default function Step3({ register, errors, watch }: Step3Props) {
             </select>
           </div>
 
-          {/* Animal de Poder */}
+          {/* Animal de Poder Principal */}
           <div className="input-with-icon">
             <Icon icon="mdi:paw" className="input-icon" />
             <select
@@ -90,6 +108,53 @@ export default function Step3({ register, errors, watch }: Step3Props) {
             </select>
             {errors.animalPoder && <div className="error-message font-sans">{errors.animalPoder.message}</div>}
           </div>
+
+          {/* Animais Secundários */}
+          {animalPoder && animalPoder !== "" && animalPoder !== "outro" && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Icon icon="mdi:paw-off" className="w-5 h-5 text-[#2C4A7E]" />
+                <h4 className="text-sm font-medium text-[#2C4A7E] font-sans">
+                  Animais Secundários (opcional - máx. 3)
+                </h4>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
+                {animalSecundarioOptions
+                  .filter(option => option.value !== "" && option.value !== animalPoder)
+                  .map((option) => {
+                    const isSelected = animaisSecundarios?.includes(option.value) || false
+                    const canSelect = (animaisSecundarios?.length || 0) < 3 || isSelected
+                    
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => handleAnimalSecundarioToggle(option.value)}
+                        disabled={!canSelect}
+                        className={`
+                          p-3 rounded-lg text-left text-xs transition-all duration-200 font-sans
+                          ${isSelected 
+                            ? 'bg-[#2E4A2F]/20 border-2 border-[#2E4A2F] text-[#2E4A2F]' 
+                            : canSelect
+                              ? 'bg-white/20 border border-[#A67B5B]/30 text-[#2C4A7E] hover:bg-white/30'
+                              : 'bg-gray-100/50 border border-gray-300/30 text-gray-400 cursor-not-allowed'
+                          }
+                        `}
+                      >
+                        {option.label}
+                      </button>
+                    )
+                  })}
+              </div>
+              
+              {(animaisSecundarios?.length || 0) > 0 && (
+                <div className="text-xs text-[#2C4A7E] opacity-70 font-sans">
+                  Selecionados: {animaisSecundarios?.length || 0}/3
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Outro Animal */}
           {animalPoder === "outro" && (

@@ -18,7 +18,7 @@ const ritualOptions = [
   { value: "", label: "Selecione o tipo de ritual" },
   { value: "ayahuasca", label: "🌿 Ayahuasca" },
   { value: "rape", label: "🍃 Rapé" },
-  { value: "kambo", label: "🐸 Kambô" },
+  { value: "cachimbo-sagrado", label: "🔥Cachimbo Sagrado" },
   { value: "outros", label: "✨ Outros" },
 ]
 

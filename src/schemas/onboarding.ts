@@ -16,7 +16,8 @@ export const step3Schema = z.object({
   bio: z.string().min(1, "Bio é obrigatória").max(140, "Bio deve ter no máximo 140 caracteres"),
   inicioJornada: z.string().min(1, "Início da jornada é obrigatório"),
   tempoExperiencia: z.string().optional(),
-  animalPoder: z.string().min(1, "Animal de poder é obrigatório"),
+  animalPoder: z.string().min(1, "Animal de poder principal é obrigatório"),
+  animaisSecundarios: z.array(z.string()),
   outroAnimal: z.string().optional(),
 }).refine((data) => {
   if (data.animalPoder === "outro") {
@@ -33,7 +34,11 @@ export const step4Schema = z.object({
   preferencia: z.string().min(1, "Preferência é obrigatória"),
 })
 
-export const fullFormSchema = step1Schema.merge(step2Schema).merge(step3Schema).merge(step4Schema)
+// Compose full schema from individual steps
+export const fullFormSchema = step1Schema
+  .merge(step2Schema)
+  .merge(step3Schema)
+  .merge(step4Schema)
 
 export type FormData = z.infer<typeof fullFormSchema>
 export type Step1Data = z.infer<typeof step1Schema>

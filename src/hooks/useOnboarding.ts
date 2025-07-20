@@ -32,6 +32,7 @@ export function useOnboarding() {
       inicioJornada: "",
       tempoExperiencia: "",
       animalPoder: "",
+      animaisSecundarios: [] as string[],
       outroAnimal: "",
       estadoCivil: "",
       preferencia: "",
@@ -152,5 +153,6 @@ export function useOnboarding() {
     validateCurrentStep,
     isSubmitting: submitOnboardingMutation.isPending,
     clearSavedData,
+    setValue,
   }
 }

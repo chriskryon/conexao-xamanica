@@ -39,25 +39,41 @@ export const stepInfo = [
 export const inicioJornadaOptions = [
   { value: "", label: "Quando começou sua jornada espiritual?" },
   { value: "menos-1-ano", label: "Há menos de 1 ano" },
-  { value: "1-2-anos", label: "Entre 1 e 2 anos" },
-  { value: "2-5-anos", label: "Entre 2 e 5 anos" },
-  { value: "5-10-anos", label: "Entre 5 e 10 anos" },
-  { value: "mais-10-anos", label: "Há mais de 10 anos" },
+  { value: "1-3-anos", label: "Entre 1 e 3 anos" },
+  { value: "3-7-anos", label: "Entre 3 e 7 anos" },
+  { value: "7-10-anos", label: "Entre 7 e 10 anos" },
+  { value: "10-15-anos", label: "Entre 10 e 15 anos" },
   { value: "desde-sempre", label: "Desde sempre" },
 ]
 
 export const tempoExperienciaOptions = [
   { value: "", label: "Tempo de experiência com consagrações" },
   { value: "nenhuma", label: "Nenhuma experiência ainda" },
-  { value: "primeira-vez", label: "Primeira experiência recente" },
-  { value: "algumas-vezes", label: "Algumas experiências (2-5)" },
-  { value: "experiencia-moderada", label: "Experiência moderada (5-15)" },
-  { value: "experiencia-ampla", label: "Experiência ampla (15+)" },
-  { value: "praticante-regular", label: "Praticante regular" },
+  { value: "menos-1-ano", label: "Há menos de 1 ano" },
+  { value: "1-3-anos", label: "Entre 1 e 3 anos" },
+  { value: "3-7-anos", label: "Entre 3 e 7 anos" },
+  { value: "7-10-anos", label: "Entre 7 e 10 anos" },
+  { value: "10-15-anos", label: "Entre 10 e 15 anos" },
+  { value: "desde-sempre", label: "Desde sempre" },
 ]
 
 export const animalOptions = [
-  { value: "", label: "Selecione seu animal de poder" },
+  { value: "", label: "Selecione seu animal de poder principal" },
+  { value: "aguia", label: "🦅 Águia - Visão e liberdade" },
+  { value: "lobo", label: "🐺 Lobo - Lealdade e intuição" },
+  { value: "onca", label: "🐆 Onça - Força e mistério" },
+  { value: "serpente", label: "🐍 Serpente - Transformação e cura" },
+  { value: "urso", label: "🐻 Urso - Força e proteção" },
+  { value: "coruja", label: "🦉 Coruja - Sabedoria e mistério" },
+  { value: "jaguar", label: "🐅 Jaguar - Poder e xamanismo" },
+  { value: "condor", label: "🦅 Condor - Visão espiritual" },
+  { value: "veado", label: "🦌 Veado - Gentileza e sensibilidade" },
+  { value: "beija-flor", label: "🐦 Beija-flor - Alegria e energia" },
+  { value: "outro", label: "🌟 Outro animal" },
+]
+
+export const animalSecundarioOptions = [
+  { value: "", label: "Animais secundários (opcional)" },
   { value: "aguia", label: "🦅 Águia - Visão e liberdade" },
   { value: "lobo", label: "🐺 Lobo - Lealdade e intuição" },
   { value: "onca", label: "🐆 Onça - Força e mistério" },

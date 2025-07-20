@@ -1,4 +1,4 @@
-import { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form"
+import { FieldErrors, UseFormRegister, UseFormWatch, UseFormSetValue } from "react-hook-form"
 import { FormData } from "@/schemas/onboarding"
 import Step1 from "./Step1"
 import Step2 from "./Step2"
@@ -10,6 +10,7 @@ interface StepRendererProps {
   register: UseFormRegister<FormData>
   errors: FieldErrors<FormData>
   watch: UseFormWatch<FormData>
+  setValue: UseFormSetValue<FormData>
   photo: File | null
   onPhotoChange: (file: File | null) => void
 }
@@ -19,6 +20,7 @@ export default function StepRenderer({
   register,
   errors,
   watch,
+  setValue,
   photo,
   onPhotoChange,
 }: StepRendererProps) {
@@ -28,7 +30,7 @@ export default function StepRenderer({
     case 2:
       return <Step2 register={register} errors={errors} watch={watch} />
     case 3:
-      return <Step3 register={register} errors={errors} watch={watch} />
+      return <Step3 register={register} errors={errors} watch={watch} setValue={setValue} />
     case 4:
       return <Step4 register={register} errors={errors} />
     default:
