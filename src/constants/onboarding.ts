@@ -58,18 +58,14 @@ export const tempoExperienciaOptions = [
 ]
 
 export const animalOptions = [
-  { value: "", label: "Selecione seu animal de poder principal" },
-  { value: "aguia", label: "🦅 Águia - Visão e liberdade" },
-  { value: "lobo", label: "🐺 Lobo - Lealdade e intuição" },
-  { value: "onca", label: "🐆 Onça - Força e mistério" },
-  { value: "serpente", label: "🐍 Serpente - Transformação e cura" },
-  { value: "urso", label: "🐻 Urso - Força e proteção" },
-  { value: "coruja", label: "🦉 Coruja - Sabedoria e mistério" },
-  { value: "jaguar", label: "🐅 Jaguar - Poder e xamanismo" },
-  { value: "condor", label: "🦅 Condor - Visão espiritual" },
-  { value: "veado", label: "🦌 Veado - Gentileza e sensibilidade" },
-  { value: "beija-flor", label: "🐦 Beija-flor - Alegria e energia" },
-  { value: "outro", label: "🌟 Outro animal" },
+    { value: "", label: "Selecione seu animal de poder principal" },
+    { value: "aguia", label: "🦅 Águia - Visão e liberdade" },
+    { value: "lobo", label: "🐺 Lobo - Lealdade e intuição" },
+    { value: "onca", label: "🐆 Onça - Força e mistério" },
+    { value: "serpente", label: "🐍 Serpente - Transformação e cura" },
+    { value: "urso", label: "🐻 Urso - Força e proteção" },
+    { value: "coruja", label: "🦉 Coruja - Sabedoria e mistério" },
+    { value: "outro", label: "🌟 Outro animal" },
 ]
 
 export const animalSecundarioOptions = [

@@ -27,3 +27,22 @@ export const getZodiacDescription = (signName: string) => {
   const sign = zodiacSigns.find((s) => s.name === signName)
   return sign ? sign.description : ""
 }
+
+export const getZodiacEmoji = (signName: string) => {
+  const emojiMap: Record<string, string> = {
+    "Áries": "♈",
+    "Touro": "♉", 
+    "Gêmeos": "♊",
+    "Câncer": "♋",
+    "Leão": "♌",
+    "Virgem": "♍",
+    "Libra": "♎",
+    "Escorpião": "♏",
+    "Sagitário": "♐",
+    "Capricórnio": "♑",
+    "Aquário": "♒",
+    "Peixes": "♓"
+  }
+  
+  return emojiMap[signName] || "⭐"
+}

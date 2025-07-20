@@ -68,6 +68,7 @@
     "tsparticles-slim": "^2.12.0",
     "vaul": "^1.1.2",
     "zod": "^4.0.5",
+    "zodiac-signs": "^1.5.0",
     "zustand": "^5.0.6"
   },
   "devDependencies": {

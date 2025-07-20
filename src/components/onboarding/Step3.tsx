@@ -14,6 +14,7 @@ export default function Step3({ register, errors, watch, setValue }: Step3Props)
   const bio = watch("bio")
   const animalPoder = watch("animalPoder")
   const animaisSecundarios = watch("animaisSecundarios") || []
+  const outrosAnimaisSecundarios = watch("outrosAnimaisSecundarios")
 
   const handleAnimalSecundarioToggle = (animalValue: string) => {
     const currentAnimals = animaisSecundarios || []
@@ -23,6 +24,11 @@ export default function Step3({ register, errors, watch, setValue }: Step3Props)
       // Remove animal
       const newAnimals = currentAnimals.filter(animal => animal !== animalValue)
       setValue("animaisSecundarios", newAnimals)
+      
+      // Se estava removendo "outro", limpar o campo de texto também
+      if (animalValue === "outro") {
+        setValue("outrosAnimaisSecundarios", "")
+      }
     } else {
       // Adiciona animal (máximo 3 secundários)
       if (currentAnimals.length < 3) {
@@ -151,6 +157,22 @@ export default function Step3({ register, errors, watch, setValue }: Step3Props)
               {(animaisSecundarios?.length || 0) > 0 && (
                 <div className="text-xs text-[#2E4A2F] opacity-70 font-sans font-medium">
                   {animaisSecundarios?.length || 0}/3 selecionados
+                </div>
+              )}
+
+              {/* Campo para outros animais secundários */}
+              {animaisSecundarios?.includes("outro") && (
+                <div className="input-with-icon">
+                  <Icon icon="mdi:star" className="input-icon" />
+                  <input
+                    {...register("outrosAnimaisSecundarios")}
+                    type="text"
+                    placeholder="Quais são seus outros animais secundários?"
+                    className="input-glassmorphism font-sans"
+                  />
+                  {errors.outrosAnimaisSecundarios && (
+                    <div className="error-message font-sans">{errors.outrosAnimaisSecundarios.message}</div>
+                  )}
                 </div>
               )}
             </div>

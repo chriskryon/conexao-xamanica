@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react"
 import { UseFormRegister, FieldErrors, UseFormWatch } from "react-hook-form"
 import { FormData } from "@/schemas/onboarding"
-import { getZodiacDescription } from "@/utils/zodiac"
+import { getZodiacDescription, getZodiacEmoji } from "@/utils/zodiac"
 import { useState, useEffect } from "react"
 import Picker from "react-mobile-picker"
 
@@ -13,9 +13,25 @@ interface Step2Props {
 
 // Gerar seleções conforme a documentação - usando valor fixo para evitar hydration error
 const selections = {
-  day: Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0')),
   month: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
   year: Array.from({ length: 80 }, (_, i) => String(2025 - 18 - i)) // Valor fixo para evitar hydration
+}
+
+// Função para calcular dias válidos baseado no mês e ano
+const getDaysInMonth = (month: string, year: string) => {
+  const monthNum = parseInt(month)
+  const yearNum = parseInt(year)
+  
+  // Dias por mês (índice 0 = janeiro)
+  const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+  
+  // Verificar ano bissexto para fevereiro
+  if (monthNum === 2) {
+    const isLeapYear = (yearNum % 4 === 0 && yearNum % 100 !== 0) || (yearNum % 400 === 0)
+    return isLeapYear ? 29 : 28
+  }
+  
+  return daysInMonth[monthNum - 1]
 }
 
 const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
@@ -31,6 +47,31 @@ export default function Step2({ register, errors, watch }: Step2Props) {
     year: '2000' // Valor fixo padrão
   })
   const [tempPickerValue, setTempPickerValue] = useState(pickerValue)
+
+  // Gerar dias dinamicamente baseado no mês/ano selecionado
+  const getDynamicSelections = () => {
+    const maxDays = getDaysInMonth(tempPickerValue.month, tempPickerValue.year)
+    const days = Array.from({ length: maxDays }, (_, i) => String(i + 1).padStart(2, '0'))
+    
+    return {
+      day: days,
+      month: selections.month,
+      year: selections.year
+    }
+  }
+
+  // Validar e ajustar dia quando mês/ano mudar
+  const handlePickerChange = (newValue: typeof tempPickerValue) => {
+    const maxDays = getDaysInMonth(newValue.month, newValue.year)
+    const currentDay = parseInt(newValue.day)
+    
+    // Se o dia atual é maior que os dias disponíveis no novo mês, ajustar para o último dia
+    if (currentDay > maxDays) {
+      newValue.day = String(maxDays).padStart(2, '0')
+    }
+    
+    setTempPickerValue(newValue)
+  }
 
   // Sincronizar com o campo de data do formulário apenas quando confirmar
   const handleConfirmDate = () => {
@@ -110,44 +151,48 @@ export default function Step2({ register, errors, watch }: Step2Props) {
               {/* Modal */}
               <div className="relative modal-glassmorphism w-full max-w-sm">
                 <h3 className="text-lg font-semibold text-[#2C4A7E] mb-4 text-center font-sans">
-                  Data de Nascimento
+                  🎂 Data de Nascimento
                 </h3>
                 
                 <div className="mb-6">
                   <Picker
                     value={tempPickerValue}
-                    onChange={setTempPickerValue}
+                    onChange={handlePickerChange}
                     wheelMode="natural"
                     height={180}
                     itemHeight={36}
                   >
-                    {Object.keys(selections).map(name => (
-                      <Picker.Column key={name} name={name}>
-                        {selections[name as keyof typeof selections].map(option => (
-                          <Picker.Item key={option} value={option}>
-                            {({ selected }: { selected: boolean }) => (
-                              <div 
-                                style={{ 
-                                  color: selected ? '#2E4A2F' : '#2C4A7E',
-                                  fontSize: selected ? '18px' : '16px',
-                                  fontWeight: selected ? '600' : '400',
-                                  opacity: selected ? 1 : 0.6,
-                                  transition: 'all 0.2s ease',
-                                  fontFamily: 'inherit',
-                                  textAlign: 'center',
-                                  padding: '8px 0'
-                                }}
-                              >
-                                {name === 'month' 
-                                  ? monthNames[parseInt(option) - 1] 
-                                  : option
-                                }
-                              </div>
-                            )}
-                          </Picker.Item>
-                        ))}
-                      </Picker.Column>
-                    ))}
+                    {Object.keys(getDynamicSelections()).map(name => {
+                      const dynamicSelections = getDynamicSelections()
+                      const columnName = name as keyof typeof dynamicSelections
+                      return (
+                        <Picker.Column key={name} name={name}>
+                          {dynamicSelections[columnName].map((option: string) => (
+                            <Picker.Item key={option} value={option}>
+                              {({ selected }: { selected: boolean }) => (
+                                <div 
+                                  style={{ 
+                                    color: selected ? '#2E4A2F' : '#2C4A7E',
+                                    fontSize: selected ? '18px' : '16px',
+                                    fontWeight: selected ? '600' : '400',
+                                    opacity: selected ? 1 : 0.6,
+                                    transition: 'all 0.2s ease',
+                                    fontFamily: 'inherit',
+                                    textAlign: 'center',
+                                    padding: '8px 0'
+                                  }}
+                                >
+                                  {name === 'month' 
+                                    ? monthNames[parseInt(option) - 1] 
+                                    : option
+                                  }
+                                </div>
+                              )}
+                            </Picker.Item>
+                          ))}
+                        </Picker.Column>
+                      )
+                    })}
                   </Picker>
                 </div>
 
@@ -171,18 +216,26 @@ export default function Step2({ register, errors, watch }: Step2Props) {
 
           {/* Signo */}
           {signo && (
-            <div className="input-with-icon tooltip-trigger">
-              <Icon icon="mdi:star-circle" className="input-icon" />
+            <div className="space-y-3">
+              {/* Emoji grande do signo */}
+              <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-gradient-to-br from-[#D6BCFA]/20 to-[#2E4A2F]/10 border border-[#D6BCFA]/30">
+                <div className="text-6xl mb-2">
+                  {getZodiacEmoji(signo)}
+                </div>
+                <div className="text-center">
+                  <h4 className="font-sans text-lg font-semibold text-[#2E4A2F]">{signo}</h4>
+                  <p className="font-sans text-sm text-[#2C4A7E] opacity-80 mt-1">
+                    {getZodiacDescription(signo)}
+                  </p>
+                </div>
+              </div>
+              
+              {/* Input hidden para o formulário */}
               <input
                 {...register("signo")}
-                type="text"
-                className="input-glassmorphism font-sans"
-                readOnly
-                placeholder="Seu signo aparecerá aqui"
+                type="hidden"
+                value={signo}
               />
-              <div className="tooltip-glassmorphism font-sans">
-                {signo}: {getZodiacDescription(signo)}
-              </div>
             </div>
           )}
         </div>

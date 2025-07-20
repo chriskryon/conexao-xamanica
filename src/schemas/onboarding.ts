@@ -19,6 +19,7 @@ export const step3Schema = z.object({
   animalPoder: z.string().min(1, "Animal de poder principal é obrigatório"),
   animaisSecundarios: z.array(z.string()),
   outroAnimal: z.string().optional(),
+  outrosAnimaisSecundarios: z.string().optional(),
 }).refine((data) => {
   if (data.animalPoder === "outro") {
     return data.outroAnimal && data.outroAnimal.trim().length > 0
@@ -27,6 +28,14 @@ export const step3Schema = z.object({
 }, {
   message: "Especifique seu animal de poder",
   path: ["outroAnimal"],
+}).refine((data) => {
+  if (data.animaisSecundarios?.includes("outro")) {
+    return data.outrosAnimaisSecundarios && data.outrosAnimaisSecundarios.trim().length > 0
+  }
+  return true
+}, {
+  message: "Especifique seus outros animais secundários",
+  path: ["outrosAnimaisSecundarios"],
 })
 
 export const step4Schema = z.object({

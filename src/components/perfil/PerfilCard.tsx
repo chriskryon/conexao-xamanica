@@ -37,7 +37,7 @@ export default function PerfilCard({
           </div>
         ) : (
           <img
-            src={user.avatar || "/placeholder.svg"}
+            src="/placeholder.svg"
             alt={user.name}
             className="w-32 h-32 rounded-full border-4 border-[#D6BCFA]/30 mx-auto object-cover"
           />
@@ -70,12 +70,10 @@ export default function PerfilCard({
             <span>Signo: {user.zodiacSign}</span>
           </div>
         )}
-        {user.joinDate && (
-          <div className="flex items-center justify-center gap-2">
-            <Icon icon="mdi:calendar" className="w-5 h-5 text-[#2E4A2F]" />
-            <span>Membro desde {user.joinDate}</span>
-          </div>
-        )}
+        <div className="flex items-center justify-center gap-2">
+          <Icon icon="mdi:calendar" className="w-5 h-5 text-[#2E4A2F]" />
+          <span>Membro desde {user.stats?.lastActivity ? new Date(user.stats.lastActivity).getFullYear() : 'Recente'}</span>
+        </div>
       </div>
 
       <div className="mt-6 pt-6 border-t border-white/20">
@@ -83,29 +81,29 @@ export default function PerfilCard({
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center">
             <div className="font-sans text-2xl font-bold text-[#2E4A2F]">
-              {stats?.totalEntries || user.totalEntries || 0}
+              {stats?.totalEntries || user.stats?.totalEntries || 0}
             </div>
             <div className="font-sans text-xs text-[#2C4A7E] opacity-70">Total</div>
           </div>
           <div className="text-center">
             <div className="font-sans text-2xl font-bold text-[#2E4A2F]">
-              {stats?.totalConsagracoes || user.totalConsagracoes || 0}
+              {stats?.totalConsagracoes || user.stats?.totalConsagracoes || 0}
             </div>
             <div className="font-sans text-xs text-[#2C4A7E] opacity-70">Rituais</div>
           </div>
           <div className="text-center">
             <div className="font-sans text-2xl font-bold text-[#2E4A2F]">
-              {stats?.totalReflexoes || user.totalReflexoes || 0}
+              {stats?.totalReflexoes || user.stats?.totalReflexoes || 0}
             </div>
             <div className="font-sans text-xs text-[#2C4A7E] opacity-70">Reflexões</div>
           </div>
         </div>
         
-        {stats?.streakDays && stats.streakDays > 0 && (
+        {(stats?.streakDays || user.stats?.streakDays) && (stats?.streakDays || user.stats?.streakDays || 0) > 0 && (
           <div className="mt-4 pt-4 border-t border-white/20">
             <div className="flex items-center justify-center gap-2 text-[#2E4A2F]">
               <Icon icon="mdi:fire" className="w-5 h-5" />
-              <span className="font-sans font-medium">{stats.streakDays} dias consecutivos</span>
+              <span className="font-sans font-medium">{stats?.streakDays || user.stats?.streakDays || 0} dias consecutivos</span>
             </div>
           </div>
         )}
