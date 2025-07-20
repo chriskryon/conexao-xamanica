@@ -324,7 +324,7 @@ export const useDashboard = () => {
   // Compute user data only when needed
   const user = profile && onboardingCompleted ? {
     name: profile.nome,
-    avatar: typeof profile.photo === 'string' ? profile.photo : '/placeholder.svg?height=80&width=80',
+    avatar: typeof profile.photo === 'string' ? profile.photo : '/profile.jpg',
     powerAnimal: profile.animalPoder || 'Águia',
     lastActivity: 'Agora'
   } : null

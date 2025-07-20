@@ -30,7 +30,7 @@ export const dashboardService = {
     if (!profile || !onboardingCompleted) {
       return {
         name: "Usuário",
-        avatar: "/placeholder.svg?height=80&width=80",
+        avatar: "/profile.jpg",
         powerAnimal: "Águia",
         lastActivity: "Agora",
       }
@@ -38,7 +38,7 @@ export const dashboardService = {
 
     const user = {
       name: profile.nome,
-      avatar: typeof profile.photo === 'string' ? profile.photo : '/placeholder.svg?height=80&width=80',
+      avatar: typeof profile.photo === 'string' ? profile.photo : '/profile.jpg',
       powerAnimal: profile.animalPoder || 'Águia',
       lastActivity: 'Agora'
     }

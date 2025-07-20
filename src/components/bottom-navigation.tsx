@@ -44,21 +44,23 @@ export default function BottomNavigation() {
   ]
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-t border-white/30 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 py-3">
-        <div className="flex items-center justify-around">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-t border-[#A67B5B]/20 shadow-xl">
+      <div className="max-w-md mx-auto px-6 py-2">
+        <div className="flex items-center justify-between">
           {navItems.map((item) => (
             <a
               key={item.id}
               href={item.href}
-              className={`flex flex-col items-center gap-1 p-3 rounded-xl transition-all duration-300 ${
+              className={`flex flex-col items-center gap-0.5 p-2.5 rounded-lg transition-all duration-300 min-w-[60px] ${
                 activeTab === item.id
-                  ? "bg-gradient-to-br from-[#2E4A2F] to-[#1a2e1b] text-white scale-110 shadow-lg"
-                  : "text-[#2C4A7E] hover:bg-white/20 hover:scale-105"
+                  ? "bg-gradient-to-br from-[#2E4A2F] to-[#1a2e1b] text-white scale-105 shadow-md"
+                  : "text-[#2C4A7E] hover:bg-white/30 hover:scale-102"
               }`}
             >
-              <Icon icon={item.icon} className="w-6 h-6" />
-              <span className="text-xs font-sans font-medium">{item.label}</span>
+              <Icon icon={item.icon} className={`${activeTab === item.id ? 'w-5 h-5' : 'w-5 h-5'}`} />
+              <span className={`text-[10px] font-sans font-medium ${activeTab === item.id ? 'opacity-100' : 'opacity-75'}`}>
+                {item.label}
+              </span>
             </a>
           ))}
         </div>

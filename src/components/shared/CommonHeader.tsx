@@ -41,7 +41,7 @@ export default function CommonHeader({
           ) : showProfile && user ? (
             <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
               <img
-                src={user.avatar || "/placeholder.svg"}
+                src={user.avatar || "/profile.jpg"}
                 alt={user.name}
                 className="w-10 h-10 rounded-full object-cover border-2 border-white/30"
               />

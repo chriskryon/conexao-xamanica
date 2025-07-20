@@ -71,8 +71,8 @@ export default function Timeline({ items, selectedItem, onItemClick }: TimelineP
             <div
               className={`flex gap-6 p-6 rounded-xl border transition-all duration-300 cursor-pointer overflow-hidden ${
                 selectedItem === item.id
-                  ? "bg-white/20 border-[#D6BCFA]/50 shadow-lg"
-                  : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-[#D6BCFA]/30"
+                  ? "bg-white/20 border-[#D6BCFA]/50 shadow-lg backdrop-blur-sm"
+                  : "bg-white/10 border-[#A67B5B]/30 hover:bg-white/15 hover:border-[#D6BCFA]/40 backdrop-blur-sm"
               }`}
               onClick={() => onItemClick(item.id)}
             >

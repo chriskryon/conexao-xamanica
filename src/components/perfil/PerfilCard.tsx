@@ -37,7 +37,7 @@ export default function PerfilCard({
           </div>
         ) : (
           <img
-            src="/placeholder.svg"
+            src="/profile.jpg"
             alt={user.name}
             className="w-32 h-32 rounded-full border-4 border-[#D6BCFA]/30 mx-auto object-cover"
           />
