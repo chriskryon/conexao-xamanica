@@ -24,7 +24,7 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="h-screen max-h-screen w-screen bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] relative overflow-hidden flex flex-col">
+    <div className="h-[95vh] max-h-[95vh] w-screen bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] relative overflow-hidden flex flex-col">
       {/* Background Particles */}
       <OnboardingBackground />
 
