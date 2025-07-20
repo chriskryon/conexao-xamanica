@@ -6,6 +6,7 @@ import Particles from "react-particles"
 import { loadSlim } from "tsparticles-slim"
 import type { Container, Engine } from "tsparticles-engine"
 import CommonHeader from "@/components/shared/CommonHeader"
+import { useUserProfile } from "@/hooks/usePerfil"
 
 // Components with proper imports
 import HistoricoStats from "@/components/historico/HistoricoStats"
@@ -27,11 +28,19 @@ export default function HistoricoPage() {
     console.log(container)
   }, [])
 
+  // Buscar dados reais do usuário (sem causar redirecionamento)
+  const { data: userProfile, isLoading: isLoadingUser } = useUserProfile()
+
+  // Mapear dados do perfil para o formato esperado pelo header
+  // Sempre fornece dados válidos, mesmo que sejam fallback
   const user = {
-    name: "Irmão da Luz",
-    avatar: "/profile.jpg",
-    powerAnimal: "Águia",
-    lastActivity: "Hoje às 10:30",
+    name: userProfile && userProfile.name !== "Usuário" ? userProfile.name : "Irmão da Luz",
+    avatar: "/profile.jpg", // TODO: usar userProfile.avatar quando disponível
+    powerAnimal: userProfile?.powerAnimal || "Águia",
+    lastActivity: userProfile?.stats?.lastActivity ? 
+      new Date(userProfile.stats.lastActivity).toLocaleDateString("pt-BR") + " às " + 
+      new Date(userProfile.stats.lastActivity).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) 
+      : "Hoje às 10:30",
   }
 
   return (

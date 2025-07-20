@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
+import { useEffect } from 'react'
 import type { FormData as OnboardingFormData } from '@/schemas/onboarding'
 import type { UserProfileData, UserStatsData, NotificationPreferencesData } from '@/schemas/perfil'
 import type { UserData, TimelineItemData } from '@/schemas/dashboard'
@@ -58,6 +59,7 @@ interface UserState {
   setLoading: (loading: boolean) => void
   clearAllData: () => void
   syncStats: () => void
+  migrateFromOldProfile: () => void
 }
 
 // ============= DADOS PADRÃO =============
@@ -268,6 +270,49 @@ export const useUserStore = create<UserState>()(
         }
         
         set({ userStats: stats })
+      },
+
+      // Migrar dados do formato antigo para o Zustand
+      migrateFromOldProfile: () => {
+        try {
+          const oldProfile = localStorage.getItem('diario_xamanico_user_profile')
+          if (oldProfile && !get().onboardingCompleted) {
+            const parsedProfile = JSON.parse(oldProfile)
+            console.log('Migrando dados do perfil antigo:', parsedProfile)
+            
+            // Converter para formato do onboarding
+            const migratedProfile: OnboardingFormData = {
+              photo: null,
+              nome: parsedProfile.name || '',
+              apelido: parsedProfile.nickname || '',
+              email: parsedProfile.email || '',
+              dataNascimento: parsedProfile.birthDate || '',
+              signo: parsedProfile.zodiacSign || '',
+              bio: parsedProfile.bio || '',
+              inicioJornada: parsedProfile.spiritualJourney || '',
+              tempoExperiencia: parsedProfile.ayahuascaExperience || '',
+              animalPoder: parsedProfile.powerAnimal || '',
+              animaisSecundarios: parsedProfile.secondaryAnimals || [],
+              outroAnimal: '',
+              outrosAnimaisSecundarios: '',
+              estadoCivil: parsedProfile.civilStatus || '',
+              preferencia: parsedProfile.preference || ''
+            }
+            
+            // Atualizar Zustand com os dados migrados
+            set({ 
+              profile: migratedProfile,
+              onboardingCompleted: true 
+            })
+            
+            // Sincronizar stats
+            get().syncStats()
+            
+            console.log('Migração concluída com sucesso')
+          }
+        } catch (error) {
+          console.error('Erro na migração do perfil:', error)
+        }
       }
     }),
     {
@@ -298,6 +343,14 @@ export const useOnboarding = () => {
   const completed = useUserStore(state => state.onboardingCompleted)
   const setProfile = useUserStore(state => state.setProfile)
   const completeOnboarding = useUserStore(state => state.completeOnboarding)
+  const migrateFromOldProfile = useUserStore(state => state.migrateFromOldProfile)
+  
+  // Tentar migração automática quando o hook é usado
+  useEffect(() => {
+    if (!completed) {
+      migrateFromOldProfile()
+    }
+  }, [completed, migrateFromOldProfile])
   const clearOnboarding = useUserStore(state => state.clearOnboarding)
   
   return {

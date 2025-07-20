@@ -30,6 +30,15 @@ export default function PerfilCard({
 
   return (
     <div className="card-glassmorphism text-center overflow-hidden">
+      {/* Aviso se está usando dados padrão */}
+      {user.name === "Usuário" && (
+        <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <div className="flex items-center justify-center gap-2 text-amber-800 text-sm">
+            <Icon icon="mdi:information" className="w-4 h-4" />
+            <span>Complete seu perfil para ver informações personalizadas</span>
+          </div>
+        </div>
+      )}
       <div className="relative inline-block mb-6">
         {isUploadingAvatar ? (
           <div className="w-32 h-32 rounded-full border-4 border-[#D6BCFA]/30 mx-auto flex items-center justify-center bg-gray-200">
@@ -64,12 +73,49 @@ export default function PerfilCard({
           <Icon icon="mdi:paw" className="w-5 h-5 text-[#2E4A2F]" />
           <span>Animal de Poder: {user.powerAnimal}</span>
         </div>
-        {user.zodiacSign && (
+        
+        {user.secondaryAnimals && user.secondaryAnimals.length > 0 && (
+          <div className="flex items-center justify-center gap-2">
+            <Icon icon="mdi:paw-outline" className="w-5 h-5 text-[#2E4A2F]" />
+            <span>Animais Secundários: {user.secondaryAnimals.filter(Boolean).slice(0, 2).join(", ")}{user.secondaryAnimals.filter(Boolean).length > 2 ? "..." : ""}</span>
+          </div>
+        )}
+        
+        {user.zodiacSign && user.zodiacSign.trim() && (
           <div className="flex items-center justify-center gap-2">
             <Icon icon="mdi:star-circle" className="w-5 h-5 text-[#2E4A2F]" />
             <span>Signo: {user.zodiacSign}</span>
           </div>
         )}
+        
+        {user.birthDate && user.birthDate.trim() && (
+          <div className="flex items-center justify-center gap-2">
+            <Icon icon="mdi:cake-variant" className="w-5 h-5 text-[#2E4A2F]" />
+            <span>Nascimento: {new Date(user.birthDate).toLocaleDateString("pt-BR")}</span>
+          </div>
+        )}
+        
+        {/* {user.experience && user.experience.trim() && (
+          <div className="flex items-center justify-center gap-2">
+            <Icon icon="mdi:clock-outline" className="w-5 h-5 text-[#2E4A2F]" />
+            <span>Experiência: {user.experience}</span>
+          </div>
+        )}
+        
+        {user.preference && user.preference.trim() && (
+          <div className="flex items-center justify-center gap-2">
+            <Icon icon="mdi:heart" className="w-5 h-5 text-[#2E4A2F]" />
+            <span>Preferência: {user.preference}</span>
+          </div>
+        )}
+        
+        {user.spiritualJourney && user.spiritualJourney.trim() && (
+          <div className="flex items-center justify-center gap-2">
+            <Icon icon="mdi:leaf" className="w-5 h-5 text-[#2E4A2F]" />
+            <span>Jornada desde: {user.spiritualJourney}</span>
+          </div>
+        )} */}
+        
         <div className="flex items-center justify-center gap-2">
           <Icon icon="mdi:calendar" className="w-5 h-5 text-[#2E4A2F]" />
           <span>Membro desde {user.stats?.lastActivity ? new Date(user.stats.lastActivity).getFullYear() : 'Recente'}</span>

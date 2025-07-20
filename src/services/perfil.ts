@@ -25,6 +25,13 @@ export const perfilService = {
       const timelineItems = store.timelineItems
       const userStats = store.userStats
       
+      console.log('DEBUG - Perfil Service Estado Zustand:', {
+        hasProfile: !!profile,
+        onboardingCompleted,
+        profileData: profile
+      })
+      
+      // Primeiro, tentar buscar dados do onboarding
       if (profile && onboardingCompleted) {
         const stats = userStats || {
           totalEntries: timelineItems.length,
@@ -46,6 +53,8 @@ export const perfilService = {
           relationshipStatus: profile.estadoCivil || '',
           preference: profile.preferencia || '',
           secondaryAnimals: profile.animaisSecundarios || [],
+          birthDate: profile.dataNascimento || '',
+          ayahuascaExperience: profile.tempoExperiencia || '',
           stats: {
             totalEntries: stats.totalEntries,
             totalConsagracoes: stats.totalConsagracoes,
@@ -53,6 +62,43 @@ export const perfilService = {
             streakDays: stats.streakDays,
             lastActivity: stats.lastActivity
           }
+        }
+      }
+      
+      // Fallback: tentar buscar diretamente do localStorage
+      if (typeof window !== 'undefined') {
+        try {
+          const directProfile = localStorage.getItem('diario_xamanico_user_profile')
+          if (directProfile) {
+            const parsedProfile = JSON.parse(directProfile)
+            console.log('Perfil Service: Dados encontrados no localStorage direto:', parsedProfile)
+            
+            // Os dados já estão no formato correto
+            return {
+              name: parsedProfile.name || "Usuário",
+              nickname: parsedProfile.nickname || '',
+              email: parsedProfile.email || '',
+              bio: parsedProfile.bio || '',
+              powerAnimal: parsedProfile.powerAnimal || '',
+              zodiacSign: parsedProfile.zodiacSign || '',
+              spiritualJourney: parsedProfile.spiritualJourney || '',
+              experience: parsedProfile.ayahuascaExperience || '',
+              relationshipStatus: parsedProfile.civilStatus || '',
+              preference: parsedProfile.preference || '',
+              secondaryAnimals: parsedProfile.secondaryAnimals || [],
+              birthDate: parsedProfile.birthDate || '',
+              ayahuascaExperience: parsedProfile.ayahuascaExperience || '',
+              stats: {
+                totalEntries: parsedProfile.totalEntries || 0,
+                totalConsagracoes: parsedProfile.totalConsagracoes || 0,
+                totalReflexoes: parsedProfile.totalReflexoes || 0,
+                streakDays: parsedProfile.streakDays || 0,
+                lastActivity: parsedProfile.joinDate ? new Date().toISOString() : new Date().toISOString()
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Erro ao ler dados diretos do localStorage:', error)
         }
       }
       
@@ -69,6 +115,8 @@ export const perfilService = {
         relationshipStatus: "Solteiro(a)",
         preference: "Todos os humanos",
         secondaryAnimals: [],
+        birthDate: "",
+        ayahuascaExperience: "",
         stats: {
           totalEntries: 0,
           totalConsagracoes: 0,

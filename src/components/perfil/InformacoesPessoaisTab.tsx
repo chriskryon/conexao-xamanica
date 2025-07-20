@@ -140,7 +140,7 @@ export default function InformacoesPessoaisTab({
             <div className="input-with-icon">
               <Icon icon="mdi:heart" className="input-icon" />
               <select
-                {...register("civilStatus")}
+                {...register("relationshipStatus")}
                 className="select-glassmorphism font-sans"
                 disabled={!isEditing}
               >
@@ -150,7 +150,7 @@ export default function InformacoesPessoaisTab({
                   </option>
                 ))}
               </select>
-              {errors.civilStatus && <div className="error-message font-sans">{String(errors.civilStatus.message || "Campo obrigatório")}</div>}
+              {errors.relationshipStatus && <div className="error-message font-sans">{String(errors.relationshipStatus.message || "Campo obrigatório")}</div>}
             </div>
 
             <div className="input-with-icon">

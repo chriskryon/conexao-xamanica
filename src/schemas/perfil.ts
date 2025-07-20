@@ -13,6 +13,8 @@ export const userProfileSchema = z.object({
   relationshipStatus: z.string().optional(),
   preference: z.string().min(1, "Preferência é obrigatória"),
   secondaryAnimals: z.array(z.string()).default([]),
+  birthDate: z.string().optional(),
+  ayahuascaExperience: z.string().optional(),
   stats: z.object({
     totalEntries: z.number().default(0),
     totalConsagracoes: z.number().default(0),

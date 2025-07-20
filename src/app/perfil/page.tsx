@@ -1,66 +1,89 @@
 "use client"
 
 import { Icon } from "@iconify/react"
+import { useState, useEffect } from "react"
 import PerfilBackground from "@/components/perfil/PerfilBackground"
 import CommonHeader from "@/components/shared/CommonHeader"
 import PerfilCard from "@/components/perfil/PerfilCard"
 import PerfilTabs from "@/components/perfil/PerfilTabs"
-import InformacoesPessoaisTab from "@/components/perfil/InformacoesPessoaisTab"
-import SegurancaTab from "@/components/perfil/SegurancaTab"
-import PreferenciasTab from "@/components/perfil/PreferenciasTab"
-import { usePerfilForms } from "@/hooks/usePerfilForms"
+import InformacoesPessoaisTab from "@/components/perfil/tabs/InformacoesPessoaisTab"
+import SegurancaTab from "@/components/perfil/tabs/SegurancaTab"
+import PreferenciasTab from "@/components/perfil/tabs/PreferenciasTab"
 
 export default function PerfilPage() {
-  const {
-    // Estados
-    isEditing,
-    activeTab,
+  // Estados locais
+  const [isEditing, setIsEditing] = useState(false)
+  const [activeTab, setActiveTab] = useState("profile")
+  const [userProfile, setUserProfile] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-    // Handlers
-    handleEditProfile,
-    handleCancelEdit,
-    handleSubmitProfile,
-    handleAvatarUpload,
-    handleSubmitPassword,
-    handleUpdateNotifications,
-    handleEndSession,
-    handleExportData,
-    handleTabChange,
+  const handleTabChange = (tab: string) => setActiveTab(tab)
 
-    // Forms
-    profileForm,
-    passwordForm,
+  // Buscar dados diretamente do localStorage para teste
+  useEffect(() => {
+    const loadUserData = () => {
+      try {
+        // Verificar dados do Zustand
+        const zustandData = localStorage.getItem('diario-xamanico-storage')
+        
+        if (zustandData) {
+          const parsed = JSON.parse(zustandData)
+          
+          if (parsed.state?.profile && parsed.state?.onboardingCompleted) {
+            const profile = parsed.state.profile
+            const mappedProfile = {
+              name: profile.nome,
+              nickname: profile.apelido || '',
+              email: profile.email,
+              bio: profile.bio || '',
+              powerAnimal: profile.animalPoder || '',
+              zodiacSign: profile.signo || '',
+              spiritualJourney: profile.inicioJornada || '',
+              experience: profile.tempoExperiencia || '',
+              relationshipStatus: profile.estadoCivil || '',
+              preference: profile.preferencia || '',
+              secondaryAnimals: profile.animaisSecundarios || [],
+              birthDate: profile.dataNascimento || '',
+              ayahuascaExperience: profile.tempoExperiencia || '',
+              stats: parsed.state.userStats || {
+                totalEntries: 0,
+                totalConsagracoes: 0,
+                totalReflexoes: 0,
+                streakDays: 0,
+                lastActivity: new Date().toISOString()
+              }
+            }
+            setUserProfile(mappedProfile)
+          }
+        }
+        
+        setIsLoading(false)
+      } catch (error) {
+        console.error('Erro ao carregar dados do usuário:', error)
+        setIsLoading(false)
+      }
+    }
 
-    // Dados das queries
-    userProfile,
-    userStats,
-    notificationPreferences,
-    userSessions,
+    loadUserData()
+  }, [])
 
-    // Estados de loading
-    isLoadingProfile,
-
-    // Estados de submissão
-    isSubmittingProfile,
-    isSubmittingPassword,
-    isUploadingAvatar,
-    isEndingSession,
-    isExportingData,
-  } = usePerfilForms()
-
-  if (isLoadingProfile) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2E4A2F] mx-auto mb-4"></div>
-          <p className="text-[#2C4A7E] font-sans">Carregando perfil...</p>
+      <div className="min-h-screen bg-gradient-to-br from-[#2E4A2F]/10 via-white to-[#2C4A7E]/10 flex items-center justify-center">
+        <div className="card-glassmorphism p-8 text-center max-w-md">
+          <div className="relative mb-6">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#2C4A7E]/20 border-t-[#2E4A2F] mx-auto"></div>
+            <Icon icon="mdi:account-circle" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 text-[#2E4A2F]" />
+          </div>
+          <h3 className="text-[#2E4A2F] font-sans font-semibold text-lg mb-2">Carregando Perfil</h3>
+          <p className="text-[#2C4A7E]">Preparando suas informações sagradas...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] relative overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#2E4A2F]/10 via-white to-[#2C4A7E]/10 relative overflow-x-hidden">
       {/* Background Particles */}
       <PerfilBackground />
 
@@ -69,46 +92,6 @@ export default function PerfilPage() {
         title="Meu Perfil"
         subtitle="Gerencie suas informações"
         showProfile={false}
-        rightContent={
-          <div className="flex items-center gap-3">
-            {!isEditing ? (
-              <button
-                onClick={handleEditProfile}
-                className="btn-secondary px-4 py-2 text-sm hover:scale-105 transition-all duration-300"
-              >
-                <Icon icon="mdi:pencil" className="w-4 h-4 inline mr-2" />
-                Editar Perfil
-              </button>
-            ) : (
-              <div className="flex gap-2">
-                <button
-                  onClick={handleCancelEdit}
-                  disabled={isSubmittingProfile}
-                  className="btn-secondary px-4 py-2 text-sm hover:scale-105 transition-all duration-300 disabled:opacity-50"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handleSubmitProfile}
-                  disabled={isSubmittingProfile}
-                  className="btn-primary px-4 py-2 text-sm hover:scale-105 transition-all duration-300 disabled:opacity-50"
-                >
-                  {isSubmittingProfile ? (
-                    <>
-                      <Icon icon="mdi:loading" className="w-4 h-4 inline mr-2 animate-spin" />
-                      Salvando...
-                    </>
-                  ) : (
-                    <>
-                      <Icon icon="mdi:content-save" className="w-4 h-4 inline mr-2" />
-                      Salvar
-                    </>
-                  )}
-                </button>
-              </div>
-            )}
-          </div>
-        }
       />
 
       {/* Main Content */}
@@ -118,10 +101,10 @@ export default function PerfilPage() {
           <div className="lg:col-span-1">
             <PerfilCard
               user={userProfile || undefined}
-              stats={userStats || undefined}
+              stats={undefined}
               isEditing={isEditing}
-              isUploadingAvatar={isUploadingAvatar}
-              onAvatarUpload={handleAvatarUpload}
+              isUploadingAvatar={false}
+              onAvatarUpload={() => {}}
             />
           </div>
 
@@ -132,38 +115,18 @@ export default function PerfilPage() {
 
             {/* Profile Tab */}
             {activeTab === "profile" && (
-              <form onSubmit={handleSubmitProfile}>
-                <InformacoesPessoaisTab
-                  register={profileForm.register}
-                  errors={profileForm.formState.errors}
-                  isEditing={isEditing}
-                  userData={userProfile}
-                />
-              </form>
+              <InformacoesPessoaisTab 
+                userProfile={userProfile}
+                isEditing={isEditing}
+                setIsEditing={setIsEditing}
+              />
             )}
 
             {/* Security Tab */}
-            {activeTab === "security" && (
-              <SegurancaTab
-                register={passwordForm.register}
-                errors={passwordForm.formState.errors}
-                isSubmittingPassword={isSubmittingPassword}
-                onSubmitPassword={handleSubmitPassword}
-                userSessions={userSessions || []}
-                onEndSession={handleEndSession}
-                isEndingSession={isEndingSession}
-              />
-            )}
+            {activeTab === "security" && <SegurancaTab />}
 
             {/* Preferences Tab */}
-            {activeTab === "preferences" && (
-              <PreferenciasTab
-                notificationPreferences={notificationPreferences || undefined}
-                onUpdateNotifications={handleUpdateNotifications}
-                onExportData={handleExportData}
-                isExportingData={isExportingData}
-              />
-            )}
+            {activeTab === "preferences" && <PreferenciasTab />}
           </div>
         </div>
       </main>

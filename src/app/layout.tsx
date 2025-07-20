@@ -56,12 +56,6 @@ export const metadata: Metadata = {
     images: ['/og-image.jpg'],
   },
   manifest: '/manifest.json',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
   robots: {
     index: true,
     follow: true,
@@ -74,6 +68,13 @@ export const metadata: Metadata = {
     },
   },
   category: 'lifestyle',
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 export default function RootLayout({
