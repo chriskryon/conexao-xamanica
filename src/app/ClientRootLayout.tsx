@@ -22,7 +22,7 @@ export default function ClientRootLayout({
           {children}
           {showBottomNav && <BottomNavigation />}
           <Toaster position="top-right" richColors />
-          <DevTools />
+          {/* <DevTools /> */}
         </QueryProvider>
       </body>
     </html>
