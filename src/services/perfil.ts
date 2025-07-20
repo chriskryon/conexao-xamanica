@@ -1,116 +1,11 @@
 import { UserProfileData, ChangePasswordData, NotificationPreferencesData, UserStatsData } from "@/schemas/perfil"
-import { onboardingStorage } from "./onboarding"
-import type { FormData as OnboardingFormData } from "@/schemas/onboarding"
+import { useUserStore } from "@/stores/userStore"
 
 // Flag para alternar entre localStorage e API real
 const USE_API = false
 
-// Chaves do localStorage
-const STORAGE_KEYS = {
-  USER_PROFILE: "diario_xamanico_user_profile",
-  USER_STATS: "diario_xamanico_user_stats", 
-  NOTIFICATION_PREFERENCES: "diario_xamanico_notification_prefs",
-  USER_SESSIONS: "diario_xamanico_user_sessions",
-}
-
-// Dados mockados para desenvolvimento
-const MOCK_USER_PROFILE: UserProfileData = {
-  name: "Maria Silva",
-  nickname: "Mari",
-  email: "maria.silva@email.com",
-  bio: "Buscadora da luz interior, conectada com a medicina ancestral e os ensinamentos da floresta. Minha jornada xamânica começou há 3 anos e desde então venho explorando os mistérios da consciência.",
-  powerAnimal: "Águia",
-  civilStatus: "Solteiro(a)",
-  preference: "Todos os humanos",
-  avatar: "/placeholder.svg?height=120&width=120",
-  birthDate: "15/03/1985",
-  zodiacSign: "Peixes",
-  ayahuascaExperience: "3 anos",
-  joinDate: "Janeiro 2022",
-  totalEntries: 47,
-  totalConsagracoes: 23,
-  totalReflexoes: 24,
-}
-
-// Função para converter dados do onboarding para formato do perfil
-const convertOnboardingToProfile = (onboardingData: OnboardingFormData): UserProfileData => {
-  return {
-    name: onboardingData.nome,
-    nickname: onboardingData.apelido || "",
-    email: onboardingData.email,
-    bio: onboardingData.bio || "",
-    powerAnimal: onboardingData.animalPoder || "",
-    civilStatus: onboardingData.estadoCivil,
-    preference: onboardingData.preferencia,
-    avatar: typeof onboardingData.photo === 'string' ? onboardingData.photo : "/placeholder.svg?height=120&width=120",
-    birthDate: onboardingData.dataNascimento,
-    zodiacSign: onboardingData.signo || "",
-    ayahuascaExperience: onboardingData.tempoExperiencia || "",
-    joinDate: new Date().toLocaleDateString('pt-BR', { 
-      year: 'numeric', 
-      month: 'long' 
-    }),
-    totalEntries: 0, // Dados iniciais
-    totalConsagracoes: 0,
-    totalReflexoes: 0,
-  }
-}
-
-const MOCK_USER_STATS: UserStatsData = {
-  totalEntries: 47,
-  totalConsagracoes: 23,
-  totalReflexoes: 24,
-  streakDays: 7,
-  lastActivity: new Date().toISOString(),
-}
-
-const MOCK_NOTIFICATION_PREFERENCES: NotificationPreferencesData = {
-  reminderNotifications: true,
-  eventNotifications: true,
-  publicProfile: false,
-  dataSharing: true,
-}
-
-const MOCK_USER_SESSIONS = [
-  {
-    id: "1",
-    device: "MacBook Pro - Chrome",
-    location: "São Paulo, Brasil",
-    lastActive: "Ativo agora",
-    isCurrent: true,
-  },
-  {
-    id: "2", 
-    device: "iPhone - Safari",
-    location: "São Paulo, Brasil",
-    lastActive: "2 horas atrás",
-    isCurrent: false,
-  },
-]
-
 // Simulação de delay para APIs
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-
-// Função para inicializar dados no localStorage
-const initializeStorage = () => {
-  if (typeof window === "undefined") return
-
-  if (!localStorage.getItem(STORAGE_KEYS.USER_PROFILE)) {
-    localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(MOCK_USER_PROFILE))
-  }
-  
-  if (!localStorage.getItem(STORAGE_KEYS.USER_STATS)) {
-    localStorage.setItem(STORAGE_KEYS.USER_STATS, JSON.stringify(MOCK_USER_STATS))
-  }
-  
-  if (!localStorage.getItem(STORAGE_KEYS.NOTIFICATION_PREFERENCES)) {
-    localStorage.setItem(STORAGE_KEYS.NOTIFICATION_PREFERENCES, JSON.stringify(MOCK_NOTIFICATION_PREFERENCES))
-  }
-  
-  if (!localStorage.getItem(STORAGE_KEYS.USER_SESSIONS)) {
-    localStorage.setItem(STORAGE_KEYS.USER_SESSIONS, JSON.stringify(MOCK_USER_SESSIONS))
-  }
-}
 
 // Serviços do perfil
 export const perfilService = {
@@ -121,25 +16,32 @@ export const perfilService = {
       const response = await fetch("/api/profile")
       return response.json()
     } else {
-      // Primeiro tenta buscar dados do onboarding
-      const onboardingData = onboardingStorage.getProfile()
+      await delay(800)
       
-      if (onboardingData && onboardingStorage.isCompleted()) {
-        // Converte dados do onboarding para formato do perfil
-        const profileData = convertOnboardingToProfile(onboardingData)
-        
-        // Simula delay e salva no storage do perfil
-        await delay(800)
-        initializeStorage()
-        localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(profileData))
-        
-        return profileData
-      } else {
-        // Fallback: busca do localStorage do perfil ou usa mock
-        await delay(800)
-        initializeStorage()
-        const data = localStorage.getItem(STORAGE_KEYS.USER_PROFILE)
-        return data ? JSON.parse(data) : MOCK_USER_PROFILE
+      // Buscar do Zustand store
+      const user = useUserStore.getState().getPerfilUser()
+      
+      if (user) {
+        return user
+      }
+      
+      // Fallback para dados mock se não houver dados do onboarding
+      return {
+        name: "Usuário",
+        nickname: "",
+        email: "usuario@email.com",
+        bio: "",
+        powerAnimal: "Águia",
+        civilStatus: "Solteiro(a)",
+        preference: "Todos os humanos",
+        avatar: "/placeholder.svg?height=120&width=120",
+        birthDate: "",
+        zodiacSign: "",
+        ayahuascaExperience: "",
+        joinDate: "Janeiro 2022",
+        totalEntries: 0,
+        totalConsagracoes: 0,
+        totalReflexoes: 0,
       }
     }
   },
@@ -155,16 +57,12 @@ export const perfilService = {
       })
       return response.json()
     } else {
-      // Simulação com localStorage
       await delay(1000)
-      const updatedProfile = {
-        ...profileData,
-        totalEntries: profileData.totalEntries || 0,
-        totalConsagracoes: profileData.totalConsagracoes || 0,
-        totalReflexoes: profileData.totalReflexoes || 0,
-      }
-      localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(updatedProfile))
-      return updatedProfile
+      
+      // Atualizar no Zustand store
+      useUserStore.getState().updateUserProfile(profileData)
+      
+      return profileData
     }
   },
 
@@ -175,9 +73,22 @@ export const perfilService = {
       return response.json()
     } else {
       await delay(600)
-      initializeStorage()
-      const data = localStorage.getItem(STORAGE_KEYS.USER_STATS)
-      return data ? JSON.parse(data) : MOCK_USER_STATS
+      
+      // Buscar do Zustand store
+      const stats = useUserStore.getState().userStats
+      
+      if (stats) {
+        return stats
+      }
+      
+      // Fallback para dados mock
+      return {
+        totalEntries: 0,
+        totalConsagracoes: 0,
+        totalReflexoes: 0,
+        streakDays: 0,
+        lastActivity: new Date().toISOString(),
+      }
     }
   },
 
@@ -207,9 +118,21 @@ export const perfilService = {
       return response.json()
     } else {
       await delay(400)
-      initializeStorage()
-      const data = localStorage.getItem(STORAGE_KEYS.NOTIFICATION_PREFERENCES)
-      return data ? JSON.parse(data) : MOCK_NOTIFICATION_PREFERENCES
+      
+      // Buscar do Zustand store
+      const prefs = useUserStore.getState().notificationPreferences
+      
+      if (prefs) {
+        return prefs
+      }
+      
+      // Fallback para dados padrão
+      return {
+        reminderNotifications: true,
+        eventNotifications: true,
+        publicProfile: false,
+        dataSharing: true,
+      }
     }
   },
 
@@ -224,7 +147,10 @@ export const perfilService = {
       return response.json()
     } else {
       await delay(600)
-      localStorage.setItem(STORAGE_KEYS.NOTIFICATION_PREFERENCES, JSON.stringify(preferences))
+      
+      // Atualizar no Zustand store
+      useUserStore.getState().updateNotificationPreferences(preferences)
+      
       return preferences
     }
   },
@@ -236,9 +162,9 @@ export const perfilService = {
       return response.json()
     } else {
       await delay(500)
-      initializeStorage()
-      const data = localStorage.getItem(STORAGE_KEYS.USER_SESSIONS)
-      return data ? JSON.parse(data) : MOCK_USER_SESSIONS
+      
+      // Buscar do Zustand store
+      return useUserStore.getState().userSessions
     }
   },
 
@@ -251,9 +177,10 @@ export const perfilService = {
       return response.json()
     } else {
       await delay(800)
-      const sessions = await this.getUserSessions()
-      const updatedSessions = sessions.filter(s => s.id !== sessionId)
-      localStorage.setItem(STORAGE_KEYS.USER_SESSIONS, JSON.stringify(updatedSessions))
+      
+      // Remover do Zustand store
+      useUserStore.getState().removeUserSession(sessionId)
+      
       return { success: true }
     }
   },
@@ -267,13 +194,18 @@ export const perfilService = {
       return response.json()
     } else {
       await delay(2000)
-      // Simulação de geração de arquivo de exportação
+      
+      // Buscar todos os dados do Zustand store
+      const store = useUserStore.getState()
       const allData = {
-        profile: await this.getUserProfile(),
-        stats: await this.getUserStats(),
-        preferences: await this.getNotificationPreferences(),
+        profile: store.profile,
+        timelineItems: store.timelineItems,
+        userStats: store.userStats,
+        notificationPreferences: store.notificationPreferences,
+        userSessions: store.userSessions,
         exportDate: new Date().toISOString(),
       }
+      
       const blob = new Blob([JSON.stringify(allData, null, 2)], { type: "application/json" })
       const url = URL.createObjectURL(blob)
       return { url }
@@ -292,13 +224,12 @@ export const perfilService = {
       return response.json()
     } else {
       await delay(1500)
+      
       // Simulação de upload - criar URL temporária para o arquivo
       const avatarUrl = URL.createObjectURL(file)
       
       // Atualizar o perfil com a nova URL do avatar
-      const currentProfile = await this.getUserProfile()
-      const updatedProfile = { ...currentProfile, avatar: avatarUrl }
-      localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(updatedProfile))
+      useUserStore.getState().updateUserProfile({ avatar: avatarUrl })
       
       return { avatarUrl }
     }

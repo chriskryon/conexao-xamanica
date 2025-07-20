@@ -35,12 +35,12 @@ export default function BottomNavigation() {
       icon: "mdi:account",
       label: "Perfil",
     },
-    {
-      id: "configuracoes",
-      href: "/configuracoes",
-      icon: "mdi:cog",
-      label: "Config",
-    },
+    // {
+    //   id: "configuracoes",
+    //   href: "/configuracoes",
+    //   icon: "mdi:cog",
+    //   label: "Config",
+    // },
   ]
 
   return (

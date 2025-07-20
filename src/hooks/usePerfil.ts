@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { perfilService } from "@/services/perfil"
+import { usePerfil as usePerfilStore } from "@/stores/userStore"
 import { UserProfileData, ChangePasswordData, NotificationPreferencesData } from "@/schemas/perfil"
 
 // Query keys
@@ -12,37 +13,49 @@ const QUERY_KEYS = {
 
 // Hook para buscar dados do perfil
 export const useUserProfile = () => {
+  const store = usePerfilStore()
+  
   return useQuery({
     queryKey: QUERY_KEYS.USER_PROFILE,
     queryFn: perfilService.getUserProfile,
     staleTime: 5 * 60 * 1000, // 5 minutos
+    initialData: store.user
   })
 }
 
 // Hook para buscar estatísticas do usuário
 export const useUserStats = () => {
+  const store = usePerfilStore()
+  
   return useQuery({
     queryKey: QUERY_KEYS.USER_STATS,
     queryFn: perfilService.getUserStats,
     staleTime: 2 * 60 * 1000, // 2 minutos
+    initialData: store.userStats
   })
 }
 
 // Hook para buscar preferências de notificação
 export const useNotificationPreferences = () => {
+  const store = usePerfilStore()
+  
   return useQuery({
     queryKey: QUERY_KEYS.NOTIFICATION_PREFERENCES,
     queryFn: perfilService.getNotificationPreferences,
     staleTime: 10 * 60 * 1000, // 10 minutos
+    initialData: store.notificationPreferences
   })
 }
 
 // Hook para buscar sessões do usuário
 export const useUserSessions = () => {
+  const store = usePerfilStore()
+  
   return useQuery({
     queryKey: QUERY_KEYS.USER_SESSIONS,
     queryFn: perfilService.getUserSessions,
     staleTime: 1 * 60 * 1000, // 1 minuto
+    initialData: store.userSessions
   })
 }
 

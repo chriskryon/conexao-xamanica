@@ -117,8 +117,8 @@ export default function PerfilPage() {
           {/* Profile Card */}
           <div className="lg:col-span-1">
             <PerfilCard
-              user={userProfile}
-              stats={userStats}
+              user={userProfile || undefined}
+              stats={userStats || undefined}
               isEditing={isEditing}
               isUploadingAvatar={isUploadingAvatar}
               onAvatarUpload={handleAvatarUpload}
@@ -158,7 +158,7 @@ export default function PerfilPage() {
             {/* Preferences Tab */}
             {activeTab === "preferences" && (
               <PreferenciasTab
-                notificationPreferences={notificationPreferences}
+                notificationPreferences={notificationPreferences || undefined}
                 onUpdateNotifications={handleUpdateNotifications}
                 onExportData={handleExportData}
                 isExportingData={isExportingData}

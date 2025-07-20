@@ -1,119 +1,12 @@
 import { ConsagracaoFormData, DiarioFormData, TimelineItemData, UserData } from "@/schemas/dashboard"
-import { onboardingStorage } from "./onboarding"
+import { useUserStore } from "@/stores/userStore"
 
 // Flag para alternar entre localStorage e API real
 const USE_API = false
 const API_BASE_URL = "/api"
 
-// Chaves do localStorage
-const STORAGE_KEYS = {
-  USER: "diario_xamanico_user",
-  TIMELINE_ITEMS: "diario_xamanico_timeline",
-  LAST_SYNC: "diario_xamanico_last_sync",
-} as const
-
 // Simulação de delay de rede
 const simulateNetworkDelay = () => new Promise(resolve => setTimeout(resolve, 800))
-
-// ============= SIMULAÇÃO LOCALSTORAGE =============
-
-const getStoredTimelineItems = (): TimelineItemData[] => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEYS.TIMELINE_ITEMS)
-    return stored ? JSON.parse(stored) : getDefaultTimelineItems()
-  } catch {
-    return getDefaultTimelineItems()
-  }
-}
-
-const setStoredTimelineItems = (items: TimelineItemData[]) => {
-  localStorage.setItem(STORAGE_KEYS.TIMELINE_ITEMS, JSON.stringify(items))
-  localStorage.setItem(STORAGE_KEYS.LAST_SYNC, new Date().toISOString())
-}
-
-const getStoredUser = (): UserData => {
-  try {
-    // Primeiro tenta buscar dados do onboarding
-    const onboardingData = onboardingStorage.getProfile()
-    
-    if (onboardingData && onboardingStorage.isCompleted()) {
-      // Converte dados do onboarding para formato do dashboard
-      return {
-        name: onboardingData.nome,
-        avatar: typeof onboardingData.photo === 'string' ? onboardingData.photo : "/placeholder.svg?height=80&width=80",
-        powerAnimal: onboardingData.animalPoder || "Águia",
-        lastActivity: "Agora",
-      }
-    }
-    
-    // Fallback: busca do localStorage específico do dashboard
-    const stored = localStorage.getItem(STORAGE_KEYS.USER)
-    return stored ? JSON.parse(stored) : getDefaultUser()
-  } catch {
-    return getDefaultUser()
-  }
-}
-
-const setStoredUser = (user: UserData) => {
-  localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user))
-}
-
-// Dados padrão
-const getDefaultUser = (): UserData => ({
-  name: "Maria Silva",
-  avatar: "/placeholder.svg?height=80&width=80",
-  powerAnimal: "Águia",
-  lastActivity: "Agora",
-})
-
-const getDefaultTimelineItems = (): TimelineItemData[] => [
-  {
-    id: "1",
-    type: "consagracao",
-    title: "Cerimônia de Ayahuasca",
-    description: "Experiência profunda de conexão com a natureza e ancestrais. Visões de cura e renovação espiritual.",
-    date: "03/07/2025",
-    time: "19:30",
-    intensity: 5,
-    ritual: "Ayahuasca",
-    tags: ["cura", "visões", "ancestrais"],
-    createdAt: "2025-07-03T19:30:00Z",
-  },
-  {
-    id: "2",
-    type: "diario",
-    title: "Reflexão sobre Gratidão",
-    description: "Momento de introspecção profunda sobre as bênçãos recebidas e o caminho espiritual percorrido.",
-    date: "02/07/2025",
-    time: "08:15",
-    mood: "grato",
-    tags: ["gratidão", "reflexão", "bênçãos"],
-    createdAt: "2025-07-02T08:15:00Z",
-  },
-  {
-    id: "3",
-    type: "consagracao",
-    title: "Ritual de Rapé",
-    description: "Limpeza energética e foco mental. Conexão com a respiração e presença no momento atual.",
-    date: "01/07/2025",
-    time: "16:45",
-    intensity: 3,
-    ritual: "Rapé",
-    tags: ["limpeza", "foco", "respiração"],
-    createdAt: "2025-07-01T16:45:00Z",
-  },
-  {
-    id: "4",
-    type: "diario",
-    title: "Sonhos e Símbolos",
-    description: "Registro de sonhos significativos com símbolos xamânicos e mensagens do inconsciente.",
-    date: "30/06/2025",
-    time: "07:00",
-    mood: "inspirado",
-    tags: ["sonhos", "símbolos", "inconsciente"],
-    createdAt: "2025-06-30T07:00:00Z",
-  },
-]
 
 // ============= SERVIÇOS =============
 
@@ -127,7 +20,21 @@ export const dashboardService = {
     }
 
     await simulateNetworkDelay()
-    return getStoredUser()
+    
+    // Usar Zustand para obter dados
+    const user = useUserStore.getState().getDashboardUser()
+    
+    // Fallback se não houver dados do onboarding
+    if (!user) {
+      return {
+        name: "Usuário",
+        avatar: "/placeholder.svg?height=80&width=80",
+        powerAnimal: "Águia",
+        lastActivity: "Agora",
+      }
+    }
+    
+    return user
   },
 
   // Atualizar dados do usuário
@@ -143,10 +50,10 @@ export const dashboardService = {
     }
 
     await simulateNetworkDelay()
-    const currentUser = getStoredUser()
-    const updatedUser = { ...currentUser, ...userData }
-    setStoredUser(updatedUser)
-    return updatedUser
+    
+    // Para API falsa, apenas retornar os dados atualizados
+    const currentUser = await this.getUser()
+    return { ...currentUser, ...userData }
   },
 
   // Obter itens da timeline
@@ -158,7 +65,9 @@ export const dashboardService = {
     }
 
     await simulateNetworkDelay()
-    return getStoredTimelineItems()
+    
+    // Usar Zustand para obter timeline
+    return useUserStore.getState().timelineItems
   },
 
   // Criar experiência de consagração
@@ -188,9 +97,8 @@ export const dashboardService = {
       createdAt: new Date().toISOString(),
     }
 
-    const currentItems = getStoredTimelineItems()
-    const updatedItems = [newItem, ...currentItems]
-    setStoredTimelineItems(updatedItems)
+    // Adicionar ao Zustand store
+    useUserStore.getState().addTimelineItem(newItem)
 
     return newItem
   },
@@ -221,9 +129,8 @@ export const dashboardService = {
       createdAt: new Date().toISOString(),
     }
 
-    const currentItems = getStoredTimelineItems()
-    const updatedItems = [newItem, ...currentItems]
-    setStoredTimelineItems(updatedItems)
+    // Adicionar ao Zustand store
+    useUserStore.getState().addTimelineItem(newItem)
 
     return newItem
   },
@@ -242,22 +149,20 @@ export const dashboardService = {
 
     await simulateNetworkDelay()
 
-    const currentItems = getStoredTimelineItems()
-    const itemIndex = currentItems.findIndex(item => item.id === id)
+    const store = useUserStore.getState()
+    const existingItem = store.timelineItems.find((item: TimelineItemData) => item.id === id)
     
-    if (itemIndex === -1) {
+    if (!existingItem) {
       throw new Error("Item não encontrado")
     }
 
     const updatedItem = { 
-      ...currentItems[itemIndex], 
+      ...existingItem, 
       ...data, 
       updatedAt: new Date().toISOString() 
     }
     
-    currentItems[itemIndex] = updatedItem
-    setStoredTimelineItems(currentItems)
-
+    store.updateTimelineItem(id, data)
     return updatedItem
   },
 
@@ -273,9 +178,7 @@ export const dashboardService = {
 
     await simulateNetworkDelay()
 
-    const currentItems = getStoredTimelineItems()
-    const updatedItems = currentItems.filter(item => item.id !== id)
-    setStoredTimelineItems(updatedItems)
+    useUserStore.getState().deleteTimelineItem(id)
   },
 
   // Limpar todos os dados (útil para debug)
@@ -288,21 +191,19 @@ export const dashboardService = {
       return
     }
 
-    localStorage.removeItem(STORAGE_KEYS.USER)
-    localStorage.removeItem(STORAGE_KEYS.TIMELINE_ITEMS)
-    localStorage.removeItem(STORAGE_KEYS.LAST_SYNC)
+    // Limpar dados do Zustand
+    useUserStore.getState().clearAllData()
   },
 
   // Obter informações de sincronização
   getLastSync(): string | null {
-    return localStorage.getItem(STORAGE_KEYS.LAST_SYNC)
+    // Para Zustand, podemos implementar timestamp de última atualização se necessário
+    return new Date().toISOString()
   },
 
   // Verificar se há dados salvos
   hasLocalData(): boolean {
-    return !!(
-      localStorage.getItem(STORAGE_KEYS.TIMELINE_ITEMS) ||
-      localStorage.getItem(STORAGE_KEYS.USER)
-    )
+    const store = useUserStore.getState()
+    return !!(store.timelineItems.length || store.getDashboardUser())
   },
 }

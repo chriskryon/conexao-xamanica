@@ -1,37 +1,35 @@
 import type { FormData as OnboardingFormData } from "@/schemas/onboarding"
+import { useUserStore } from "@/stores/userStore"
 
 // Configuração - fácil trocar depois
 const USE_API = false // Trocar para true quando tiver API
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api'
 
-// Chaves padronizadas do localStorage
-const STORAGE_KEYS = {
-  USER_PROFILE: "diario_xamanico_user_profile",
-  ONBOARDING_COMPLETED: "diario_xamanico_onboarding_completed",
-} as const
-
-// Simuladores localStorage
-const localStorageSimulator = {
+// Simuladores com Zustand
+const zustandSimulator = {
   // Simular envio de onboarding
   submitOnboarding: async (data: OnboardingFormData): Promise<{ success: boolean; user: any }> => {
     // Simular delay de rede
     await new Promise(resolve => setTimeout(resolve, 1500))
     
-    // Salvar no localStorage como "usuário criado"
-    const userData = {
-      id: Date.now(),
-      ...data,
-      createdAt: new Date().toISOString(),
-      photo: data.photo ? `photo-${Date.now()}.jpg` : null // Simular URL da foto
-    }
+    // Salvar no Zustand store
+    const { setProfile, completeOnboarding } = useUserStore.getState()
     
-    localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(userData))
-    localStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETED, 'true')
+    // Converter File para string se necessário (simular upload)
+    const processedData = {
+      ...data,
+      photo: data.photo instanceof File ? `photo-${Date.now()}.jpg` : data.photo,
+    } as OnboardingFormData
+    
+    setProfile(processedData)
+    completeOnboarding()
+    
+    console.log('✅ Onboarding salvo no Zustand:', processedData)
     
     // Simular resposta da API
     return {
       success: true,
-      user: userData
+      user: processedData
     }
   },
 
@@ -118,51 +116,40 @@ const apiServices = {
 }
 
 // Exportar serviços baseado na configuração
-export const onboardingService = USE_API ? apiServices : localStorageSimulator
+export const onboardingService = USE_API ? apiServices : zustandSimulator
 
 // Função para trocar facilmente
 export const switchToAPI = () => {
   console.log('🚀 Para usar API, mude USE_API para true em src/services/onboarding.ts')
 }
 
-// Função para verificar dados salvos
-export const getStoredUserData = () => {
-  if (typeof window !== 'undefined') {
-    const userData = localStorage.getItem(STORAGE_KEYS.USER_PROFILE)
-    const completed = localStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED)
-    
-    return {
-      userData: userData ? JSON.parse(userData) : null,
-      completed: completed === 'true'
-    }
-  }
-  return { userData: null, completed: false }
-}
-
-// Funções auxiliares para outros serviços acessarem os dados
+// Funções auxiliares usando Zustand
 export const onboardingStorage = {
   // Buscar dados do perfil salvo no onboarding
   getProfile: (): OnboardingFormData | null => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem(STORAGE_KEYS.USER_PROFILE)
-      return stored ? JSON.parse(stored) : null
-    }
-    return null
+    const { profile } = useUserStore.getState()
+    return profile
   },
 
   // Verificar se onboarding foi completado
   isCompleted: (): boolean => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED) === 'true'
-    }
-    return false
+    const { onboardingCompleted } = useUserStore.getState()
+    return onboardingCompleted
   },
 
   // Limpar dados (util para logout)
   clear: () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(STORAGE_KEYS.USER_PROFILE)
-      localStorage.removeItem(STORAGE_KEYS.ONBOARDING_COMPLETED)
-    }
+    const { clearOnboarding } = useUserStore.getState()
+    clearOnboarding()
+  }
+}
+
+// Função para verificar dados salvos (mantida para compatibilidade)
+export const getStoredUserData = () => {
+  const { profile, onboardingCompleted } = useUserStore.getState()
+  
+  return {
+    userData: profile,
+    completed: onboardingCompleted
   }
 }

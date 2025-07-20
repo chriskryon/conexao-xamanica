@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { dashboardService } from "@/services/dashboard"
+import { useDashboard as useDashboardStore } from "@/stores/userStore"
 import { ConsagracaoFormData, DiarioFormData, TimelineItemData, UserData } from "@/schemas/dashboard"
 
 // Query keys para cache management
@@ -13,11 +14,14 @@ export const dashboardKeys = {
 
 // Hook para dados do usuário
 export const useUser = () => {
+  const store = useDashboardStore()
+  
   return useQuery({
     queryKey: dashboardKeys.user(),
     queryFn: dashboardService.getUser,
     staleTime: 5 * 60 * 1000, // 5 minutos
     retry: 2,
+    initialData: store.user
   })
 }
 
@@ -39,11 +43,14 @@ export const useUpdateUser = () => {
 
 // Hook para itens da timeline
 export const useTimelineItems = () => {
+  const store = useDashboardStore()
+  
   return useQuery({
     queryKey: dashboardKeys.timeline(),
     queryFn: dashboardService.getTimelineItems,
     staleTime: 2 * 60 * 1000, // 2 minutos
     retry: 2,
+    initialData: store.timelineItems
   })
 }
 
