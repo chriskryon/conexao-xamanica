@@ -42,7 +42,8 @@ export default function OnboardingForm({
       <SavedDataIndicator onClearData={onClearData} />
       
       {/* Progress Indicator */}
-      <ProgressIndicator currentStep={currentStep} totalSteps={4} />
+      {/* Removi por que estava ocupando muito espaço */}
+      {/* <ProgressIndicator currentStep={currentStep} totalSteps={4} /> */}
 
       {/* Main Card - com scroll interno */}
       <div className="card-glassmorphism flex-1 flex flex-col overflow-hidden">

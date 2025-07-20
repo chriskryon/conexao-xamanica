@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react"
 export default function OnboardingHeader() {
   return (
     <header className="relative z-20 bg-white/10 backdrop-blur-sm border-b border-white/20 flex-shrink-0">
-      <div className="max-w-7xl mx-auto px-4 py-3">
+      <div className="max-w-7xl mx-auto px-4 py-1">
         <div className="flex items-center justify-center">
           <div className="flex items-center gap-3">
             <Icon icon="mdi:eagle" className="w-8 h-8 text-[#2E4A2F]" />

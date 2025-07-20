@@ -69,11 +69,11 @@ export default function PhotoUpload({ onPhotoChange, currentPhoto }: PhotoUpload
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-1">
       <div
         {...getRootProps()}
         className={`
-          relative border-2 border-dashed rounded-xl p-6 text-center cursor-pointer
+          relative border border-dashed rounded-md p-3 text-center cursor-pointer
           transition-all duration-300 backdrop-blur-sm
           ${getBorderColor()} ${getBackgroundColor()}
           hover:bg-white/30 hover:border-[#2E4A2F]/50
@@ -88,9 +88,9 @@ export default function PhotoUpload({ onPhotoChange, currentPhoto }: PhotoUpload
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className="space-y-3"
+              className="space-y-1"
             >
-              <div className="relative mx-auto w-24 h-24 rounded-full overflow-hidden bg-gray-100">
+              <div className="relative mx-auto w-12 h-12 rounded-full overflow-hidden bg-gray-100">
                 <img 
                   src={preview || (currentPhoto ? URL.createObjectURL(currentPhoto) : '')} 
                   alt="Preview" 
@@ -102,13 +102,13 @@ export default function PhotoUpload({ onPhotoChange, currentPhoto }: PhotoUpload
                     e.stopPropagation()
                     removePhoto()
                   }}
-                  className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                  className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
                 >
                   ×
                 </button>
               </div>
-              <p className="text-sm text-[#2E4A2F] font-sans">
-                Clique ou arraste para alterar
+              <p className="text-xs text-[#2E4A2F] font-sans opacity-70">
+                Alterar
               </p>
             </motion.div>
           ) : (
@@ -117,32 +117,18 @@ export default function PhotoUpload({ onPhotoChange, currentPhoto }: PhotoUpload
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="space-y-3"
+              className="space-y-1"
             >
-              <motion.div
-                animate={isDragActive ? { scale: 1.1 } : { scale: 1 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Icon 
-                  icon={isDragActive ? "mdi:cloud-upload" : "mdi:camera-plus"} 
-                  className={`w-12 h-12 mx-auto transition-colors ${
-                    isDragActive ? 'text-green-500' : 'text-[#2E4A2F]'
-                  }`} 
-                />
-              </motion.div>
+              <Icon 
+                icon={isDragActive ? "mdi:cloud-upload" : "mdi:camera-plus"} 
+                className={`w-6 h-6 mx-auto transition-colors ${
+                  isDragActive ? 'text-green-500' : 'text-[#2E4A2F]'
+                }`} 
+              />
               
-              <div>
-                <p className="text-[#2E4A2F] font-medium font-sans">
-                  {isDragActive ? (
-                    'Solte sua foto aqui!'
-                  ) : (
-                    'Arraste sua foto ou clique aqui'
-                  )}
-                </p>
-                <p className="text-xs text-[#2C4A7E] opacity-60 mt-1 font-sans">
-                  PNG, JPG, GIF até 5MB
-                </p>
-              </div>
+              <p className="text-[#2E4A2F] font-medium font-sans text-xs">
+                {isDragActive ? 'Solte!' : 'Foto'}
+              </p>
             </motion.div>
           )}
         </AnimatePresence>

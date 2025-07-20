@@ -37,18 +37,11 @@ export default function Step1({ register, errors, photo, onPhotoChange, watch }:
   }
 
   return (
-    <div className="space-y-4 fade-in">
+    <div className="space-y-3 fade-in">
       <div className="form-section">
-        <h3 className="section-title">Foto de Perfil</h3>
-        <PhotoUpload 
-          onPhotoChange={onPhotoChange}
-          currentPhoto={photo}
-        />
-      </div>
-
-      <div className="form-section">
-        <h3 className="section-title">Informações Pessoais</h3>
-        <div className="space-y-3">
+        <h3 className="section-title">
+            oais</h3>
+        <div className="space-y-2">
           {/* Nome */}
           <div className="input-with-icon">
             <Icon icon="mdi:account" className="input-icon" />
@@ -57,6 +50,7 @@ export default function Step1({ register, errors, photo, onPhotoChange, watch }:
               type="text"
               placeholder="Seu nome completo"
               className="input-glassmorphism font-sans"
+              autoComplete="name"
             />
             {errors.nome && <div className="error-message font-sans">{errors.nome.message}</div>}
           </div>
@@ -67,8 +61,9 @@ export default function Step1({ register, errors, photo, onPhotoChange, watch }:
             <input
               {...register("apelido")}
               type="text"
-              placeholder="Como gosta de ser chamado(a)"
+              placeholder="Apelido ou Nome"
               className="input-glassmorphism font-sans"
+              autoComplete="nickname"
             />
           </div>
 
@@ -80,6 +75,8 @@ export default function Step1({ register, errors, photo, onPhotoChange, watch }:
               type="email"
               placeholder="seu@email.com"
               className="input-glassmorphism font-sans"
+              autoComplete="email"
+              inputMode="email"
             />
             {isCheckingEmail && (
               <div className="flex items-center gap-2 mt-1">
@@ -97,6 +94,17 @@ export default function Step1({ register, errors, photo, onPhotoChange, watch }:
               </div>
             )}
             {errors.email && <div className="error-message font-sans">{errors.email.message}</div>}
+          </div>
+
+          {/* Foto de Perfil */}
+          <div className="pt-1">
+            <label className="block text-xs font-medium text-[#2C4A7E] mb-1 font-sans opacity-80">
+              Foto de Perfil (opcional)
+            </label>
+            <PhotoUpload 
+              onPhotoChange={onPhotoChange}
+              currentPhoto={photo}
+            />
           </div>
         </div>
       </div>

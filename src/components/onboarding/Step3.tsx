@@ -32,22 +32,22 @@ export default function Step3({ register, errors, watch, setValue }: Step3Props)
   }
 
   return (
-    <div className="space-y-4 fade-in">
+    <div className="space-y-3 fade-in">
       <div className="form-section">
         <h3 className="section-title">Sua Jornada Espiritual</h3>
-        <div className="space-y-3">
+        <div className="space-y-2">
           {/* Bio */}
           <div className="input-with-icon tooltip-trigger">
-            <Icon icon="mdi:feather" className="input-icon" style={{ top: "1.25rem" }} />
+            <Icon icon="mdi:feather" className="input-icon" style={{ top: "1rem" }} />
             <textarea
               {...register("bio")}
-              placeholder="Conte sobre sua jornada espiritual, suas experiências e o que busca..."
+              placeholder="Conte sobre sua jornada espiritual..."
               className="input-glassmorphism font-sans resize-none"
-              rows={4}
+              rows={3}
               maxLength={140}
             />
-            <div className="tooltip-glassmorphism font-sans">Descreva sua essência espiritual</div>
-            <div className="flex justify-between items-center mt-2">
+            <div className="tooltip-glassmorphism font-sans">Sua essência espiritual</div>
+            <div className="flex justify-between items-center mt-1">
               {errors.bio && <div className="error-message font-sans">{errors.bio.message}</div>}
               <div className="text-xs text-[#2C4A7E] opacity-60 font-sans ml-auto">
                 {bio?.length || 0}/140
@@ -58,8 +58,8 @@ export default function Step3({ register, errors, watch, setValue }: Step3Props)
       </div>
 
       <div className="form-section">
-        <h3 className="section-title">Experiências Xamânicas</h3>
-        <div className="space-y-3">
+        <h3 className="section-title">Experiências</h3>
+        <div className="space-y-2">
           {/* Início do Caminho Espiritual */}
           <div className="input-with-icon">
             <Icon icon="mdi:compass" className="input-icon" />
@@ -78,9 +78,9 @@ export default function Step3({ register, errors, watch, setValue }: Step3Props)
             )}
           </div>
 
-          {/* Tempo de Experiência de Consagração */}
+          {/* Tempo de Experiência */}
           <div className="input-with-icon">
-            <Icon icon="mdi:cup" className="input-icon" />
+            <Icon icon="mdi:clock-outline" className="input-icon" />
             <select
               {...register("tempoExperiencia")}
               className="select-glassmorphism font-sans"
@@ -111,15 +111,15 @@ export default function Step3({ register, errors, watch, setValue }: Step3Props)
 
           {/* Animais Secundários */}
           {animalPoder && animalPoder !== "" && animalPoder !== "outro" && (
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Icon icon="mdi:paw-off" className="w-5 h-5 text-[#2C4A7E]" />
-                <h4 className="text-sm font-medium text-[#2C4A7E] font-sans">
-                  Animais Secundários (opcional - máx. 3)
+                <Icon icon="mdi:paw-off" className="w-4 h-4 text-[#2C4A7E]" />
+                <h4 className="text-xs font-medium text-[#2C4A7E] font-sans opacity-80">
+                  Animais Secundários (máx. 3)
                 </h4>
               </div>
               
-              <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
+              <div className="grid grid-cols-2 gap-1.5 max-h-32 overflow-y-auto">
                 {animalSecundarioOptions
                   .filter(option => option.value !== "" && option.value !== animalPoder)
                   .map((option) => {
@@ -133,9 +133,9 @@ export default function Step3({ register, errors, watch, setValue }: Step3Props)
                         onClick={() => handleAnimalSecundarioToggle(option.value)}
                         disabled={!canSelect}
                         className={`
-                          p-3 rounded-lg text-left text-xs transition-all duration-200 font-sans
+                          p-2 rounded-md text-left text-xs transition-all duration-200 font-sans
                           ${isSelected 
-                            ? 'bg-[#2E4A2F]/20 border-2 border-[#2E4A2F] text-[#2E4A2F]' 
+                            ? 'bg-[#2E4A2F]/20 border border-[#2E4A2F] text-[#2E4A2F] font-medium' 
                             : canSelect
                               ? 'bg-white/20 border border-[#A67B5B]/30 text-[#2C4A7E] hover:bg-white/30'
                               : 'bg-gray-100/50 border border-gray-300/30 text-gray-400 cursor-not-allowed'
@@ -149,8 +149,8 @@ export default function Step3({ register, errors, watch, setValue }: Step3Props)
               </div>
               
               {(animaisSecundarios?.length || 0) > 0 && (
-                <div className="text-xs text-[#2C4A7E] opacity-70 font-sans">
-                  Selecionados: {animaisSecundarios?.length || 0}/3
+                <div className="text-xs text-[#2E4A2F] opacity-70 font-sans font-medium">
+                  {animaisSecundarios?.length || 0}/3 selecionados
                 </div>
               )}
             </div>

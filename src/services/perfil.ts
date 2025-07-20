@@ -40,19 +40,19 @@ export const perfilService = {
           email: profile.email,
           bio: profile.bio || '',
           powerAnimal: profile.animalPoder || '',
-          civilStatus: profile.estadoCivil,
-          preference: profile.preferencia,
-          avatar: typeof profile.photo === 'string' ? profile.photo : '/placeholder.svg?height=120&width=120',
-          birthDate: profile.dataNascimento,
           zodiacSign: profile.signo || '',
-          ayahuascaExperience: profile.tempoExperiencia || '',
-          joinDate: new Date().toLocaleDateString('pt-BR', { 
-            year: 'numeric', 
-            month: 'long' 
-          }),
-          totalEntries: stats.totalEntries,
-          totalConsagracoes: stats.totalConsagracoes,
-          totalReflexoes: stats.totalReflexoes,
+          spiritualJourney: profile.inicioJornada || '',
+          experience: profile.tempoExperiencia || '',
+          relationshipStatus: profile.estadoCivil || '',
+          preference: profile.preferencia || '',
+          secondaryAnimals: profile.animaisSecundarios || [],
+          stats: {
+            totalEntries: stats.totalEntries,
+            totalConsagracoes: stats.totalConsagracoes,
+            totalReflexoes: stats.totalReflexoes,
+            streakDays: stats.streakDays,
+            lastActivity: stats.lastActivity
+          }
         }
       }
       
@@ -63,16 +63,19 @@ export const perfilService = {
         email: "usuario@email.com",
         bio: "",
         powerAnimal: "Águia",
-        civilStatus: "Solteiro(a)",
-        preference: "Todos os humanos",
-        avatar: "/placeholder.svg?height=120&width=120",
-        birthDate: "",
         zodiacSign: "",
-        ayahuascaExperience: "",
-        joinDate: "Janeiro 2022",
-        totalEntries: 0,
-        totalConsagracoes: 0,
-        totalReflexoes: 0,
+        spiritualJourney: "",
+        experience: "",
+        relationshipStatus: "Solteiro(a)",
+        preference: "Todos os humanos",
+        secondaryAnimals: [],
+        stats: {
+          totalEntries: 0,
+          totalConsagracoes: 0,
+          totalReflexoes: 0,
+          streakDays: 0,
+          lastActivity: new Date().toISOString()
+        }
       }
     }
   },
@@ -260,7 +263,13 @@ export const perfilService = {
       const avatarUrl = URL.createObjectURL(file)
       
       // Atualizar o perfil com a nova URL do avatar
-      useUserStore.getState().updateUserProfile({ avatar: avatarUrl })
+      const store = useUserStore.getState()
+      if (store.profile) {
+        store.setProfile({ 
+          ...store.profile, 
+          photo: avatarUrl as any // URL string para avatar atualizado
+        })
+      }
       
       return { avatarUrl }
     }

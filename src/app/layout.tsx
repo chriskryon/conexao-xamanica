@@ -7,7 +7,13 @@ import './globals.css'
 export const metadata: Metadata = {
   title: "Diário Xamânico - Onboarding",
   description: "Conecte-se com sua jornada espiritual",
-    generator: 'v0.dev'
+  generator: 'v0.dev',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  }
 }
 
 export default function RootLayout({

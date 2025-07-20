@@ -63,13 +63,24 @@
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.6) 100%);
     border: 1.5px solid rgba(214, 188, 250, 0.3);
     border-radius: 12px;
-    padding: 1rem 1.25rem;
+    padding: 0.875rem 1rem;
     color: #2c4a7e;
-    font-size: 1rem;
+    font-size: 16px; /* Prevent iOS zoom */
     font-weight: 400;
     transition: all 0.3s ease-in-out;
     width: 100%;
     box-shadow: 0 2px 8px rgba(214, 188, 250, 0.1);
+    appearance: none;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (max-width: 768px) {
+    .input-glassmorphism {
+      padding: 0.75rem 0.875rem;
+      font-size: 16px; /* Critical for iOS to prevent zoom */
+      border-radius: 10px;
+    }
   }
 
   .input-glassmorphism::placeholder {
@@ -477,6 +488,7 @@
 
   .line-clamp-3 {
     display: -webkit-box;
+    line-clamp: 3;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -484,6 +496,7 @@
 
   .line-clamp-2 {
     display: -webkit-box;
+    line-clamp: 2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -493,4 +506,14 @@
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+/* Estilos customizados para react-mobile-picker */
+.react-mobile-picker {
+  background: rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(10px) !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(166, 123, 91, 0.3) !important;
+  font-family: inherit !important;
+  padding: 16px !important;
 }

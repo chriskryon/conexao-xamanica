@@ -7,16 +7,19 @@ export const userProfileSchema = z.object({
   email: z.string().email("E-mail inválido"),
   bio: z.string().min(1, "Bio é obrigatória").max(500, "Bio muito longa"),
   powerAnimal: z.string().min(1, "Animal de poder é obrigatório"),
-  civilStatus: z.string().min(1, "Estado civil é obrigatório"),
-  preference: z.string().min(1, "Preferência é obrigatória"),
-  avatar: z.string().optional(),
-  birthDate: z.string().optional(),
   zodiacSign: z.string().optional(),
-  ayahuascaExperience: z.string().optional(),
-  joinDate: z.string().optional(),
-  totalEntries: z.number().default(0),
-  totalConsagracoes: z.number().default(0),
-  totalReflexoes: z.number().default(0),
+  spiritualJourney: z.string().optional(),
+  experience: z.string().optional(),
+  relationshipStatus: z.string().optional(),
+  preference: z.string().min(1, "Preferência é obrigatória"),
+  secondaryAnimals: z.array(z.string()).default([]),
+  stats: z.object({
+    totalEntries: z.number().default(0),
+    totalConsagracoes: z.number().default(0),
+    totalReflexoes: z.number().default(0),
+    streakDays: z.number().default(0),
+    lastActivity: z.string()
+  })
 })
 
 // Schema para alteração de senha
