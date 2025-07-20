@@ -24,7 +24,7 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="h-screen w-screen bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] relative overflow-hidden flex flex-col">
+    <div className="h-screen max-h-screen w-screen bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] relative overflow-hidden flex flex-col">
       {/* Background Particles */}
       <OnboardingBackground />
 
@@ -32,7 +32,7 @@ export default function Onboarding() {
       <OnboardingHeader />
 
       {/* Main Content */}
-      <div className="relative z-10 flex-1 flex flex-col overflow-hidden">
+      <div className="relative z-10 flex-1 flex flex-col overflow-hidden max-h-full">
         <OnboardingForm
           currentStep={currentStep}
           register={register}
