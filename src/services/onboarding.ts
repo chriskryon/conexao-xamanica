@@ -4,6 +4,12 @@ import type { FormData as OnboardingFormData } from "@/schemas/onboarding"
 const USE_API = false // Trocar para true quando tiver API
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api'
 
+// Chaves padronizadas do localStorage
+const STORAGE_KEYS = {
+  USER_PROFILE: "diario_xamanico_user_profile",
+  ONBOARDING_COMPLETED: "diario_xamanico_onboarding_completed",
+} as const
+
 // Simuladores localStorage
 const localStorageSimulator = {
   // Simular envio de onboarding
@@ -19,8 +25,8 @@ const localStorageSimulator = {
       photo: data.photo ? `photo-${Date.now()}.jpg` : null // Simular URL da foto
     }
     
-    localStorage.setItem('user-profile', JSON.stringify(userData))
-    localStorage.setItem('onboarding-completed', 'true')
+    localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(userData))
+    localStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETED, 'true')
     
     // Simular resposta da API
     return {
@@ -122,8 +128,8 @@ export const switchToAPI = () => {
 // Função para verificar dados salvos
 export const getStoredUserData = () => {
   if (typeof window !== 'undefined') {
-    const userData = localStorage.getItem('user-profile')
-    const completed = localStorage.getItem('onboarding-completed')
+    const userData = localStorage.getItem(STORAGE_KEYS.USER_PROFILE)
+    const completed = localStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED)
     
     return {
       userData: userData ? JSON.parse(userData) : null,
@@ -131,4 +137,32 @@ export const getStoredUserData = () => {
     }
   }
   return { userData: null, completed: false }
+}
+
+// Funções auxiliares para outros serviços acessarem os dados
+export const onboardingStorage = {
+  // Buscar dados do perfil salvo no onboarding
+  getProfile: (): OnboardingFormData | null => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(STORAGE_KEYS.USER_PROFILE)
+      return stored ? JSON.parse(stored) : null
+    }
+    return null
+  },
+
+  // Verificar se onboarding foi completado
+  isCompleted: (): boolean => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED) === 'true'
+    }
+    return false
+  },
+
+  // Limpar dados (util para logout)
+  clear: () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEYS.USER_PROFILE)
+      localStorage.removeItem(STORAGE_KEYS.ONBOARDING_COMPLETED)
+    }
+  }
 }

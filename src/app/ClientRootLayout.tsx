@@ -17,7 +17,7 @@ export default function ClientRootLayout({
 
   return (
     <html lang="pt-BR">
-      <body className={`font-sans antialiased ${showBottomNav ? "pb-20" : ""}`}>
+      <body className={`font-sans antialiased ${showBottomNav ? "pb-24" : ""}`}>
         <QueryProvider>
           {children}
           {showBottomNav && <BottomNavigation />}

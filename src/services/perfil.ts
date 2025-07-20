@@ -1,4 +1,6 @@
 import { UserProfileData, ChangePasswordData, NotificationPreferencesData, UserStatsData } from "@/schemas/perfil"
+import { onboardingStorage } from "./onboarding"
+import type { FormData as OnboardingFormData } from "@/schemas/onboarding"
 
 // Flag para alternar entre localStorage e API real
 const USE_API = false
@@ -28,6 +30,30 @@ const MOCK_USER_PROFILE: UserProfileData = {
   totalEntries: 47,
   totalConsagracoes: 23,
   totalReflexoes: 24,
+}
+
+// Função para converter dados do onboarding para formato do perfil
+const convertOnboardingToProfile = (onboardingData: OnboardingFormData): UserProfileData => {
+  return {
+    name: onboardingData.nome,
+    nickname: onboardingData.apelido || "",
+    email: onboardingData.email,
+    bio: onboardingData.bio || "",
+    powerAnimal: onboardingData.animalPoder || "",
+    civilStatus: onboardingData.estadoCivil,
+    preference: onboardingData.preferencia,
+    avatar: typeof onboardingData.photo === 'string' ? onboardingData.photo : "/placeholder.svg?height=120&width=120",
+    birthDate: onboardingData.dataNascimento,
+    zodiacSign: onboardingData.signo || "",
+    ayahuascaExperience: onboardingData.tempoExperiencia || "",
+    joinDate: new Date().toLocaleDateString('pt-BR', { 
+      year: 'numeric', 
+      month: 'long' 
+    }),
+    totalEntries: 0, // Dados iniciais
+    totalConsagracoes: 0,
+    totalReflexoes: 0,
+  }
 }
 
 const MOCK_USER_STATS: UserStatsData = {
@@ -95,11 +121,26 @@ export const perfilService = {
       const response = await fetch("/api/profile")
       return response.json()
     } else {
-      // Simulação com localStorage
-      await delay(800)
-      initializeStorage()
-      const data = localStorage.getItem(STORAGE_KEYS.USER_PROFILE)
-      return data ? JSON.parse(data) : MOCK_USER_PROFILE
+      // Primeiro tenta buscar dados do onboarding
+      const onboardingData = onboardingStorage.getProfile()
+      
+      if (onboardingData && onboardingStorage.isCompleted()) {
+        // Converte dados do onboarding para formato do perfil
+        const profileData = convertOnboardingToProfile(onboardingData)
+        
+        // Simula delay e salva no storage do perfil
+        await delay(800)
+        initializeStorage()
+        localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(profileData))
+        
+        return profileData
+      } else {
+        // Fallback: busca do localStorage do perfil ou usa mock
+        await delay(800)
+        initializeStorage()
+        const data = localStorage.getItem(STORAGE_KEYS.USER_PROFILE)
+        return data ? JSON.parse(data) : MOCK_USER_PROFILE
+      }
     }
   },
 

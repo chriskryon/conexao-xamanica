@@ -1,4 +1,5 @@
 import { ConsagracaoFormData, DiarioFormData, TimelineItemData, UserData } from "@/schemas/dashboard"
+import { onboardingStorage } from "./onboarding"
 
 // Flag para alternar entre localStorage e API real
 const USE_API = false
@@ -32,6 +33,20 @@ const setStoredTimelineItems = (items: TimelineItemData[]) => {
 
 const getStoredUser = (): UserData => {
   try {
+    // Primeiro tenta buscar dados do onboarding
+    const onboardingData = onboardingStorage.getProfile()
+    
+    if (onboardingData && onboardingStorage.isCompleted()) {
+      // Converte dados do onboarding para formato do dashboard
+      return {
+        name: onboardingData.nome,
+        avatar: typeof onboardingData.photo === 'string' ? onboardingData.photo : "/placeholder.svg?height=80&width=80",
+        powerAnimal: onboardingData.animalPoder || "Águia",
+        lastActivity: "Agora",
+      }
+    }
+    
+    // Fallback: busca do localStorage específico do dashboard
     const stored = localStorage.getItem(STORAGE_KEYS.USER)
     return stored ? JSON.parse(stored) : getDefaultUser()
   } catch {

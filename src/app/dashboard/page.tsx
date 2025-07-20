@@ -1,7 +1,7 @@
 "use client"
 
 import DashboardBackground from "@/components/dashboard/DashboardBackground"
-import DashboardHeader from "@/components/dashboard/DashboardHeader"
+import CommonHeader from "@/components/shared/CommonHeader"
 import ActionCards from "@/components/dashboard/ActionCards"
 import ConsagracaoModal from "@/components/dashboard/ConsagracaoModal"
 import DiarioModal from "@/components/dashboard/DiarioModal"
@@ -66,7 +66,11 @@ export default function Dashboard() {
       <DashboardBackground />
 
       {/* Header */}
-      <DashboardHeader user={user} />
+      <CommonHeader 
+        title="Diário Xamânico"
+        subtitle="Dashboard Espiritual"
+        user={user}
+      />
 
       {/* Modals */}
       <ConsagracaoModal

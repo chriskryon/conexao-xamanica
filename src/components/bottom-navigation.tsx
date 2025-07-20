@@ -20,8 +20,8 @@ export default function BottomNavigation() {
     {
       id: "dashboard",
       href: "/dashboard",
-      icon: "mdi:plus-circle",
-      label: "Registrar",
+      icon: "mdi:view-dashboard",
+      label: "Dashboard",
     },
     {
       id: "historico",
@@ -44,8 +44,8 @@ export default function BottomNavigation() {
   ]
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-30 bg-white/10 backdrop-blur-md border-t border-white/20">
-      <div className="max-w-md mx-auto px-4 py-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-t border-white/30 shadow-lg">
+      <div className="max-w-7xl mx-auto px-4 py-3">
         <div className="flex items-center justify-around">
           {navItems.map((item) => (
             <a
