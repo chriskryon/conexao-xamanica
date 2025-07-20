@@ -22,16 +22,25 @@ export const dashboardService = {
     await simulateNetworkDelay()
     
     // Usar Zustand para obter dados
-    const user = useUserStore.getState().getDashboardUser()
+    const store = useUserStore.getState()
+    const profile = store.profile
+    const onboardingCompleted = store.onboardingCompleted
     
     // Fallback se não houver dados do onboarding
-    if (!user) {
+    if (!profile || !onboardingCompleted) {
       return {
         name: "Usuário",
         avatar: "/placeholder.svg?height=80&width=80",
         powerAnimal: "Águia",
         lastActivity: "Agora",
       }
+    }
+
+    const user = {
+      name: profile.nome,
+      avatar: typeof profile.photo === 'string' ? profile.photo : '/placeholder.svg?height=80&width=80',
+      powerAnimal: profile.animalPoder || 'Águia',
+      lastActivity: 'Agora'
     }
     
     return user
@@ -204,6 +213,6 @@ export const dashboardService = {
   // Verificar se há dados salvos
   hasLocalData(): boolean {
     const store = useUserStore.getState()
-    return !!(store.timelineItems.length || store.getDashboardUser())
+    return !!(store.timelineItems.length || (store.profile && store.onboardingCompleted))
   },
 }

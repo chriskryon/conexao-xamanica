@@ -54,10 +54,6 @@ interface UserState {
   addUserSession: (session: UserSession) => void
   removeUserSession: (sessionId: string) => void
   
-  // ========== COMPUTED VALUES ==========
-  getDashboardUser: () => UserData | null
-  getPerfilUser: () => UserProfileData | null
-  
   // ========== UTILITIES ==========
   setLoading: (loading: boolean) => void
   clearAllData: () => void
@@ -241,54 +237,6 @@ export const useUserStore = create<UserState>()(
         }))
       },
 
-      // ========== COMPUTED VALUES ==========
-      
-      getDashboardUser: (): UserData | null => {
-        const state = get()
-        if (!state.profile || !state.onboardingCompleted) return null
-        
-        return {
-          name: state.profile.nome,
-          avatar: typeof state.profile.photo === 'string' ? state.profile.photo : '/placeholder.svg?height=80&width=80',
-          powerAnimal: state.profile.animalPoder || 'Águia',
-          lastActivity: 'Agora'
-        }
-      },
-
-      getPerfilUser: (): UserProfileData | null => {
-        const state = get()
-        if (!state.profile || !state.onboardingCompleted) return null
-        
-        const stats = state.userStats || {
-          totalEntries: state.timelineItems.length,
-          totalConsagracoes: state.timelineItems.filter(item => item.type === 'consagracao').length,
-          totalReflexoes: state.timelineItems.filter(item => item.type === 'diario').length,
-          streakDays: 7,
-          lastActivity: new Date().toISOString()
-        }
-        
-        return {
-          name: state.profile.nome,
-          nickname: state.profile.apelido || '',
-          email: state.profile.email,
-          bio: state.profile.bio || '',
-          powerAnimal: state.profile.animalPoder || '',
-          civilStatus: state.profile.estadoCivil,
-          preference: state.profile.preferencia,
-          avatar: typeof state.profile.photo === 'string' ? state.profile.photo : '/placeholder.svg?height=120&width=120',
-          birthDate: state.profile.dataNascimento,
-          zodiacSign: state.profile.signo || '',
-          ayahuascaExperience: state.profile.tempoExperiencia || '',
-          joinDate: new Date().toLocaleDateString('pt-BR', { 
-            year: 'numeric', 
-            month: 'long' 
-          }),
-          totalEntries: stats.totalEntries,
-          totalConsagracoes: stats.totalConsagracoes,
-          totalReflexoes: stats.totalReflexoes,
-        }
-      },
-
       // ========== UTILITIES ==========
       
       setLoading: (loading: boolean) => {
@@ -363,7 +311,8 @@ export const useOnboarding = () => {
 
 // Hook para dados do dashboard
 export const useDashboard = () => {
-  const user = useUserStore(state => state.getDashboardUser())
+  const profile = useUserStore(state => state.profile)
+  const onboardingCompleted = useUserStore(state => state.onboardingCompleted)
   const timelineItems = useUserStore(state => state.timelineItems)
   const addTimelineItem = useUserStore(state => state.addTimelineItem)
   const updateTimelineItem = useUserStore(state => state.updateTimelineItem)
@@ -371,6 +320,14 @@ export const useDashboard = () => {
   const setTimelineItems = useUserStore(state => state.setTimelineItems)
   const isLoading = useUserStore(state => state.isLoading)
   const setLoading = useUserStore(state => state.setLoading)
+  
+  // Compute user data only when needed
+  const user = profile && onboardingCompleted ? {
+    name: profile.nome,
+    avatar: typeof profile.photo === 'string' ? profile.photo : '/placeholder.svg?height=80&width=80',
+    powerAnimal: profile.animalPoder || 'Águia',
+    lastActivity: 'Agora'
+  } : null
   
   return {
     user,
@@ -386,7 +343,9 @@ export const useDashboard = () => {
 
 // Hook para dados do perfil
 export const usePerfil = () => {
-  const user = useUserStore(state => state.getPerfilUser())
+  const profile = useUserStore(state => state.profile)
+  const onboardingCompleted = useUserStore(state => state.onboardingCompleted)
+  const timelineItems = useUserStore(state => state.timelineItems)
   const userStats = useUserStore(state => state.userStats)
   const notificationPreferences = useUserStore(state => state.notificationPreferences)
   const userSessions = useUserStore(state => state.userSessions)
@@ -395,6 +354,32 @@ export const usePerfil = () => {
   const removeUserSession = useUserStore(state => state.removeUserSession)
   const isLoading = useUserStore(state => state.isLoading)
   const setLoading = useUserStore(state => state.setLoading)
+  
+  // Compute user data only when needed
+  const user = profile && onboardingCompleted ? (() => {
+    const stats = userStats || {
+      totalEntries: timelineItems.length,
+      totalConsagracoes: timelineItems.filter(item => item.type === 'consagracao').length,
+      totalReflexoes: timelineItems.filter(item => item.type === 'diario').length,
+      streakDays: 7,
+      lastActivity: new Date().toISOString()
+    }
+    
+    return {
+      name: profile.nome,
+      nickname: profile.apelido || '',
+      email: profile.email,
+      bio: profile.bio || '',
+      powerAnimal: profile.animalPoder || '',
+      zodiacSign: profile.signo || '',
+      spiritualJourney: profile.inicioJornada || '',
+      experience: profile.tempoExperiencia || '',
+      relationshipStatus: profile.estadoCivil || '',
+      preference: profile.preferencia || '',
+      secondaryAnimals: profile.animaisSecundarios || [],
+      stats
+    }
+  })() : null
   
   return {
     user,

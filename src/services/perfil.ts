@@ -19,10 +19,41 @@ export const perfilService = {
       await delay(800)
       
       // Buscar do Zustand store
-      const user = useUserStore.getState().getPerfilUser()
+      const store = useUserStore.getState()
+      const profile = store.profile
+      const onboardingCompleted = store.onboardingCompleted
+      const timelineItems = store.timelineItems
+      const userStats = store.userStats
       
-      if (user) {
-        return user
+      if (profile && onboardingCompleted) {
+        const stats = userStats || {
+          totalEntries: timelineItems.length,
+          totalConsagracoes: timelineItems.filter(item => item.type === 'consagracao').length,
+          totalReflexoes: timelineItems.filter(item => item.type === 'diario').length,
+          streakDays: 7,
+          lastActivity: new Date().toISOString()
+        }
+        
+        return {
+          name: profile.nome,
+          nickname: profile.apelido || '',
+          email: profile.email,
+          bio: profile.bio || '',
+          powerAnimal: profile.animalPoder || '',
+          civilStatus: profile.estadoCivil,
+          preference: profile.preferencia,
+          avatar: typeof profile.photo === 'string' ? profile.photo : '/placeholder.svg?height=120&width=120',
+          birthDate: profile.dataNascimento,
+          zodiacSign: profile.signo || '',
+          ayahuascaExperience: profile.tempoExperiencia || '',
+          joinDate: new Date().toLocaleDateString('pt-BR', { 
+            year: 'numeric', 
+            month: 'long' 
+          }),
+          totalEntries: stats.totalEntries,
+          totalConsagracoes: stats.totalConsagracoes,
+          totalReflexoes: stats.totalReflexoes,
+        }
       }
       
       // Fallback para dados mock se não houver dados do onboarding
